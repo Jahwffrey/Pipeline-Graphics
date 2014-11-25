@@ -1,6 +1,6 @@
 all: prog
 
-prog: prog.cpp
+prog: main.cpp
 	g++ -o prog4 main.cpp -std=c++11
 	echo "****Programming Assignment 4 for CS180 by John Thomason****"
 	./prog4
