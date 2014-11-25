@@ -1,6 +1,8 @@
 //John Thomason Assignment 4 Main File
 #include <fstream>
 #include "matrix.h"
+#include "point.h"
+#include <iostream>
 //#include "point.h"
 
 int main(){
@@ -24,7 +26,11 @@ int main(){
 	matrix testmat2(val2);
 	matrix copytest(testmat);
 	testmat.times(testmat2);
-		
+	point testpoint(1,1,1);	
+	
+	testpoint = testpoint.times(copytest);
+	std::cout << testpoint.x << " " << testpoint.y << " " << testpoint.z << " " << testpoint.w;
+
 	int num = 0;
 	
 	stream <<  "P1\n" << width << " " << height << "\n";
