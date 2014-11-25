@@ -1,5 +1,6 @@
 //John Thomason Assignment 4 Main File
 #include <fstream>
+#include "matrix.h"
 
 int main(){
 	std::ofstream stream;
@@ -16,5 +17,7 @@ int main(){
 		stream << "\n";
 	}
 
+	matrix testmat;
+	
 	return 0;
 }
