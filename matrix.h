@@ -2,10 +2,10 @@
 #define _MATRIX_H
 class matrix{
 public:
-	float* values;
-	
+	float values[16];
 	matrix();
 	matrix(float* set_values);
-	void times(matrix mat);
+	void times(matrix matt);
+	float* get_values();
 };
 #endif

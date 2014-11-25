@@ -1,5 +1,5 @@
 #include "matrix.h"
-
+#include <iostream>
 //im going to represent my matrices as such:
 //	{1,0,0,0
 //	,0,1,0,0
@@ -13,38 +13,41 @@
 */
 
 matrix::matrix(){
-	values = {0};
+	for(int i = 0; i < 16; i++){
+		values[i] = 0;
+	}
 }
 
 matrix::matrix(float* set_values){
-	//array<float,16> temps = set_values?
-	values = {0};
 	for(int i = 0; i < 16; i++){
 		values[i] = set_values[i];
 	}
 }
 
 void matrix::times(matrix matt){
-	float* temps = values;
+	float temps[16];
+	for(int i = 0;i < 16; i++){
+		temps[i] = values[i];
+	}
 	float* mat = matt.values;
 	
-	values[0] = temps[0]*mat[0] + temps[4]*mat[1] + temps[8]*mat[2] + temps[12]*mat[3];	
-	values[1] = temps[1]*mat[0] + temps[5]*mat[1] + temps[9]*mat[2] + temps[13]*mat[3];
-	values[2] = temps[2]*mat[0] + temps[6]*mat[1] + temps[10]*mat[2] + temps[14]*mat[3];
-	values[3] = temps[3]*mat[0] + temps[7]*mat[1] + temps[11]*mat[2] + temps[15]*mat[3];
+	values[0] = mat[0]*temps[0] + mat[4]*temps[1] + mat[8]*temps[2] + mat[12]*temps[3];	
+	values[1] = mat[4]*temps[0] + mat[5]*temps[1] + mat[9]*temps[2] + mat[13]*temps[3];
+	values[2] = mat[8]*temps[0] + mat[6]*temps[1] + mat[10]*temps[2] + mat[14]*temps[3];
+	values[3] = mat[12]*temps[0] + mat[7]*temps[1] + mat[11]*temps[2] + mat[15]*temps[3];
 
-	values[4] = temps[0]*mat[4] + temps[4]*mat[5] + temps[8]*mat[6] + temps[12]*mat[7];	
-	values[5] = temps[1]*mat[4] + temps[5]*mat[5] + temps[9]*mat[6] + temps[13]*mat[7];
-	values[6] = temps[2]*mat[4] + temps[6]*mat[5] + temps[10]*mat[6] + temps[14]*mat[7];
-	values[7] = temps[3]*mat[4] + temps[7]*mat[5] + temps[11]*mat[6] + temps[15]*mat[7];
+	values[4] = mat[0]*temps[4] + mat[4]*temps[5] + mat[8]*temps[6] + mat[12]*temps[7];	
+	values[5] = mat[1]*temps[4] + mat[5]*temps[5] + mat[9]*temps[6] + mat[13]*temps[7];
+	values[6] = mat[2]*temps[4] + mat[6]*temps[5] + mat[10]*temps[6] + mat[14]*temps[7];
+	values[7] = mat[3]*temps[4] + mat[7]*temps[5] + mat[11]*temps[6] + mat[15]*temps[7];
 	
-	values[8] = temps[0]*mat[8] + temps[4]*mat[9] + temps[8]*mat[10] + temps[12]*mat[11];	
-	values[9] = temps[1]*mat[8] + temps[5]*mat[9] + temps[9]*mat[10] + temps[13]*mat[11];
-	values[10] = temps[2]*mat[8] + temps[6]*mat[9] + temps[10]*mat[10] + temps[14]*mat[11];
-	values[11] = temps[3]*mat[8] + temps[7]*mat[9] + temps[11]*mat[10] + temps[15]*mat[11];
+	values[8] = mat[0]*temps[8] + mat[4]*temps[9] + mat[8]*temps[10] + mat[12]*temps[11];	
+	values[9] = mat[1]*temps[8] + mat[5]*temps[9] + mat[9]*temps[10] + mat[13]*temps[11];
+	values[10] = mat[2]*temps[8] + mat[6]*temps[9] + mat[10]*temps[10] + mat[14]*temps[11];
+	values[11] = mat[3]*temps[8] + mat[7]*temps[9] + mat[11]*temps[10] + mat[15]*temps[11];
 
-	values[12] = temps[0]*mat[12] + temps[4]*mat[13] + temps[8]*mat[14] + temps[12]*mat[15];	
-	values[13] = temps[1]*mat[12] + temps[5]*mat[13] + temps[9]*mat[14] + temps[13]*mat[15];
-	values[14] = temps[2]*mat[12] + temps[6]*mat[13] + temps[10]*mat[14] + temps[14]*mat[15];
-	values[15] = temps[3]*mat[12] + temps[7]*mat[13] + temps[11]*mat[14] + temps[15]*mat[15];
+	values[12] = mat[0]*temps[12] + mat[4]*temps[13] + mat[8]*temps[14] + mat[12]*temps[15];	
+	values[13] = mat[1]*temps[12] + mat[5]*temps[13] + mat[9]*temps[14] + mat[13]*temps[15];
+	values[14] = mat[2]*temps[12] + mat[6]*temps[13] + mat[10]*temps[14] + mat[14]*temps[15];
+	values[15] = mat[3]*temps[12] + mat[7]*temps[13] + mat[11]*temps[14] + mat[15]*temps[15];
 }

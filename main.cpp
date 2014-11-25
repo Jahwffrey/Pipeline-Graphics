@@ -6,18 +6,34 @@ int main(){
 	std::ofstream stream;
 	stream.open("testimg.ppm");
 	
-	int width = 255;
-	int height = 255;
+	int width = 4;
+	int height = 4;
 
-	stream <<  "P1\n" << width << " " << height << "\n255\n";
-	for(int y = 0; y < height; y++){
+	float val[16] = {0,0,0,0,
+			 1,1,1,0,
+			 0,0,0,1,
+			 0,1,0,0};
+
+	float val2[16] = {0,0,1,0,
+			  1,0,0,0,
+			  0,0,1,0,
+			  0,1,0,0};
+
+	matrix testmat(val);
+	matrix testmat2(val2);
+	testmat.times(testmat2);
+		
+	int num = 0;
+	
+	stream <<  "P1\n" << width << " " << height << "\n";
+	for(int y = 0; y < width; y++){
 		for(int x = 0; x < width; x++){
-			stream << "0 ";
+			stream << testmat.values[num] ;
+			num+=1;
 		}
 		stream << "\n";
 	}
 
-	matrix testmat;
 	
 	return 0;
 }
