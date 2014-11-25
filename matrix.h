@@ -5,6 +5,7 @@ public:
 	float values[16];
 	matrix();
 	matrix(float* set_values);
+	matrix(const matrix& copy);
 	void times(matrix matt);
 	float* get_values();
 };

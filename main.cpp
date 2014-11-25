@@ -1,6 +1,7 @@
 //John Thomason Assignment 4 Main File
 #include <fstream>
 #include "matrix.h"
+//#include "point.h"
 
 int main(){
 	std::ofstream stream;
@@ -21,6 +22,7 @@ int main(){
 
 	matrix testmat(val);
 	matrix testmat2(val2);
+	matrix copytest(testmat);
 	testmat.times(testmat2);
 		
 	int num = 0;

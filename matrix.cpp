@@ -24,6 +24,12 @@ matrix::matrix(float* set_values){
 	}
 }
 
+matrix::matrix(const matrix& copy){
+	for(int i = 0; i < 16; i++){
+		values[i] = copy.values[i];
+	}
+}
+
 void matrix::times(matrix matt){
 	float temps[16];
 	for(int i = 0;i < 16; i++){
