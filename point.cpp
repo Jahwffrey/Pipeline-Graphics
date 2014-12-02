@@ -1,6 +1,7 @@
 #include "point.h"
 #include "matrix.h"
 #include "commonvars.h"
+#include "math.h"
 #include <iostream>
 
 point::point(){
@@ -24,6 +25,14 @@ point::point(float xx,float yy, float zz,float ww){
 	y = yy;
 	z = zz;
 	w = ww;
+}
+
+float point::magnitude(){
+	return pow(x*x + y*y + z*z,.5);
+}
+
+point point::s_times(float scalar){
+	return point(x*scalar,y*scalar,z*scalar);
 }
 
 point point::times(matrix matt){

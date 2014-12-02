@@ -39,9 +39,9 @@ void lookAt(float ex,float ey,float ez,float cx,float cy,float cz,float ux,float
 
 	//First build the scale matrix
 	matrix S(IDENTITY);
-	S.values[0] = -(near/((right-left)/2));
+	S.values[0] = (near/((right-left)/2));
 	S.values[5] = (near/((top-bottom)/2));
-	S.values[10]= 2;//1/(far);
+	S.values[10]= 1/(far);
 	
 	//next build the rotation matrix
 	float rvals[16] = {u.x,u.y,u.z,0,
@@ -69,11 +69,15 @@ void lookAt(float ex,float ey,float ez,float cx,float cy,float cz,float ux,float
 //Functions:
 void drawLine(point p1, point p2){
 	int x1 = (int)(((p1.x/p1.z)*width)+(width/2));
+	std::cout << x1 << ",";
 	int y1 = (int)(((p1.y/p1.z)*height)+(height/2));
+	std::cout << y1 << ",";
 	float z1 = p1.z;
 
 	int x2 = (int)(((p2.x/p2.z)*width)+(width/2));
+	std::cout << x2 << ",";
 	int y2 = (int)(((p2.y/p2.z)*height)+(height/2));
+	std::cout << y2 << ",";
  	float z2 = p2.z;
 
 	bool extreme = false;
@@ -144,16 +148,26 @@ int main(){
 		}
 	}
 
-	float translateTest[16] = {1,0,0,2,
+	float translateTest[16] = {1,0,0,20,
 				   0,1,0,0,
-				   0,0,1,-2,
+				   0,0,1,0,
 				   0,0,0,1};
 
 	matrix transMat (translateTest);
-	lookAt(0,3,10,0,0,0,0,1,0,9,100);
-
-	mainMatrix.times(translateTest);
-			
+	lookAt(0,0,10,0,0,0,0,1,0,9,-100);
+	
+	/*point p1 (10,50,0);
+	point p2 (100,45,20);
+	point p3 (100,105,20);
+	point p4 (10,100,0);
+	
+	drawLine(p1,p2);
+	drawLine(p2,p3);
+	drawLine(p3,p4);
+	drawLine(p4,p1);
+	drawLine(p1,p3);
+	drawLine(p2,p4);*/
+	
 	point p1(-1,1,0);
 	point p2(1,1,0);
 	
@@ -174,11 +188,6 @@ int main(){
 	drawLine(p7,p8);
 	drawLine(p5,p7);
 	drawLine(p6,p8);
-
-	drawLine(p1,p5);
-	drawLine(p2,p6);
-	drawLine(p3,p7);
-	drawLine(p4,p8);
 
 	stream <<  "P1\n" << width << " " << height << "\n";
 	for(int y = 0; y < width; y++){
