@@ -8,10 +8,10 @@ prog: main.o matrix.o point.o
 	./prog4
 	display testimg.ppm
 
-main.o: main.cpp matrix.h point.h
+main.o: main.cpp matrix.h point.h commonvars.h
 	${CCC} -c -std=c++11 main.cpp
 	
-point.o: point.cpp point.h matrix.h
+point.o: point.cpp point.h matrix.h commonvars.h
 	${CCC} -c -std=c++11 point.cpp
 
 matirx.o: matrix.cpp matrix.h

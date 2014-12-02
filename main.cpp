@@ -1,6 +1,7 @@
 //John Thomason Assignment 4 Main File
 #include <fstream>
 #include "matrix.h"
+#include "commonvars.h"
 #include "point.h"
 #include <iostream>
 #include <cmath>
@@ -10,6 +11,13 @@ const int width = 500;
 const int height = 500;
 int imageBuffer[width][height];
 float zBuffer[width][height];
+float IDENTITY[16] = {1,0,0,0,
+		      	    0,1,0,0,
+		      	    0,0,1,0,
+		      	    0,0,0,1};
+
+matrix mainMatrix(IDENTITY);
+matrix matrixStack[32];
 
 //Functions:
 void drawLine(point p1, point p2){
@@ -48,10 +56,7 @@ void drawLine(point p1, point p2){
 
 
 	int dx = x2 - x1;
-	int dy = y2 - y1;
-	if(dy < 0){
-		dy = dy*-1;
-	}
+	int dy = abs(y2 - y1);
 	float dz = z2 - z1;	
 
 	int err = (dy << 1) - dx;
@@ -103,27 +108,27 @@ int main(){
 			  0,0,1,0,
 			  0,1,0,0};
 
-	matrix testmat(val);
-	matrix testmat2(val2);
-	matrix copytest(testmat);
-	testmat.times(testmat2);
-	point testpoint(1,1,1);	
-	testpoint = testpoint.times(copytest);
+	float translateTest[16] = {1,0,0,0,
+				   0,1,0,0,
+				   0,0,1,0,
+				   0,0,0,1};
 
-	point p1 (10,10,10);
-	point p2 (20,15,10);
+	matrix transMat (translateTest);
+	mainMatrix.times(transMat);
+	
+	std::cout << mainMatrix.values[3];
 
-	point p3 (10,10,10);
-	point p4 (20,40,10);
-	point p7 (1,40,10);
-	
-	point p5 (30,30,10);
-	point p6 (50,25,10);
-	
-	drawLine(p2,p1);
+	point p1 (10,50,0);
+	point p2 (100,45,20);
+	point p3 (100,105,20);
+	point p4 (10,100,0);
+
+	drawLine(p1,p2);
+	drawLine(p2,p3);
 	drawLine(p3,p4);
-	drawLine(p5,p6);
-	drawLine(p3,p7);
+	drawLine(p4,p1);
+	drawLine(p1,p3);
+	drawLine(p2,p4);		
 
 	stream <<  "P1\n" << width << " " << height << "\n";
 	for(int y = 0; y < width; y++){

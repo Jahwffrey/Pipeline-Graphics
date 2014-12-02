@@ -1,5 +1,7 @@
 #include "point.h"
 #include "matrix.h"
+#include "commonvars.h"
+#include <iostream>
 
 point::point(){
 	x = 0;
@@ -13,6 +15,8 @@ point::point(float xx,float yy, float zz){
 	y = yy;
 	z = zz;
 	w = 1;
+
+	(*this) = (*this).times(mainMatrix);
 }
 
 point::point(float xx,float yy, float zz,float ww){
@@ -24,10 +28,19 @@ point::point(float xx,float yy, float zz,float ww){
 
 point point::times(matrix matt){
 	float* mat = matt.values;
-	float xx = mat[0]*x + mat[1]*x + mat[2]*x + mat[3]*x;
-	float yy = mat[4]*y + mat[5]*y + mat[6]*y + mat[7]*y;
-	float zz = mat[8]*z + mat[9]*z + mat[10]*z + mat[11]*z;
-	float ww = mat[12]*w + mat[13]*w + mat[14]*w + mat[15]*w;	
+	float xx = mat[0]*x + mat[1]*y + mat[2]*z + mat[3]*w;
+	float yy = mat[4]*x + mat[5]*y + mat[6]*z + mat[7]*w;
+	float zz = mat[8]*x + mat[9]*y + mat[10]*z + mat[11]*w;
+	float ww = mat[12]*x + mat[13]*y + mat[14]*z + mat[15]*w;	
 
 	return point(xx,yy,zz,ww);
 }
+
+point point::cross(point other){
+	float newX = y*other.z - z*other.y;
+	float newY = z*other.x - x*other.z;
+	float newZ = x*other.y - y*other.x;
+	
+	return point(newX,newY,newZ,1);
+}
+

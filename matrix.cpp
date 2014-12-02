@@ -38,9 +38,9 @@ void matrix::times(matrix matt){
 	float* mat = matt.values;
 	
 	values[0] = mat[0]*temps[0] + mat[4]*temps[1] + mat[8]*temps[2] + mat[12]*temps[3];	
-	values[1] = mat[4]*temps[0] + mat[5]*temps[1] + mat[9]*temps[2] + mat[13]*temps[3];
-	values[2] = mat[8]*temps[0] + mat[6]*temps[1] + mat[10]*temps[2] + mat[14]*temps[3];
-	values[3] = mat[12]*temps[0] + mat[7]*temps[1] + mat[11]*temps[2] + mat[15]*temps[3];
+	values[1] = mat[1]*temps[0] + mat[5]*temps[1] + mat[9]*temps[2] + mat[13]*temps[3];
+	values[2] = mat[2]*temps[0] + mat[6]*temps[1] + mat[10]*temps[2] + mat[14]*temps[3];
+	values[3] = mat[3]*temps[0] + mat[7]*temps[1] + mat[11]*temps[2] + mat[15]*temps[3];
 
 	values[4] = mat[0]*temps[4] + mat[4]*temps[5] + mat[8]*temps[6] + mat[12]*temps[7];	
 	values[5] = mat[1]*temps[4] + mat[5]*temps[5] + mat[9]*temps[6] + mat[13]*temps[7];
