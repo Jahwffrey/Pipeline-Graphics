@@ -49,6 +49,9 @@ void drawLine(point p1, point p2){
 
 	int dx = x2 - x1;
 	int dy = y2 - y1;
+	if(dy < 0){
+		dy = dy*-1;
+	}
 	float dz = z2 - z1;	
 
 	int err = (dy << 1) - dx;
