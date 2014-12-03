@@ -18,6 +18,25 @@ float IDENTITY[16] = {1,0,0,0,
 
 matrix mainMatrix(IDENTITY);
 matrix matrixStack[32];
+int mStackPos = 0;
+
+void pushMatrix(){
+	if(mStackPos >= 32){
+		std::cout << "Matrix stack too deep\n";
+		exit(1);
+	}
+	matrixStack[mStackPos] = mainMatrix;
+	mStackPos++;
+}
+
+void popMatrix(){
+	if(mStackPos == 0){
+		std::cout << "Pop called on empty matrix stack\n";
+		exit(1);
+	}
+	mainMatrix = matrixStack[mStackPos-1];
+	mStackPos--;
+}
 
 void scale(float cx,float cy,float cz){
 	float svals[16]={cx,0,0,0,
@@ -190,7 +209,7 @@ int main(){
 	point p2(1,1,0);
 	
 	point p3(-1,-1,0);
-	point p4(1,-1,0);
+	point p4(1,-1,0);	
 
 	point p5(-1,1,-2);
 	point p6(1,1,-2);

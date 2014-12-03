@@ -8,5 +8,11 @@ public:
 	matrix(const matrix& copy);
 	void times(matrix matt);
 	float* get_values();
+	
+	matrix operator=(const matrix& r){
+		for(int i = 0;i < 16;i++){
+			values[i] = r.values[i];
+		}
+	}
 };
 #endif
