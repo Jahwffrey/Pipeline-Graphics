@@ -3,8 +3,10 @@
 #include "matrix.h"
 #include "commonvars.h"
 #include "point.h"
+#include "triangle.h"
 #include <iostream>
 #include <cmath>
+#include <vector>
 
 //Global things:
 const int width = 500;
@@ -19,6 +21,16 @@ float IDENTITY[16] = {1,0,0,0,
 matrix mainMatrix(IDENTITY);
 matrix matrixStack[32];
 int mStackPos = 0;
+std::vector<triangle> triangleVect;
+
+struct line{
+	point p1;
+	point p2;
+	triangle* tri;
+};
+
+std::vector<line> lineVect;
+
 
 void pushMatrix(){
 	if(mStackPos >= 32){
@@ -217,19 +229,25 @@ int main(){
 	point p7(-1,-1,-2);
 	point p8(1,-1,-2);
 
-	drawLine(p1,p2);		
-	drawLine(p3,p4);
-	drawLine(p1,p3);
-	drawLine(p2,p4);
-	drawLine(p5,p6);
-	drawLine(p7,p8);
-	drawLine(p5,p7);
-	drawLine(p6,p8);
+	triangle testtri(p1,p2,p3);
 
-	drawLine(p1,p5);
-	drawLine(p2,p6);
-	drawLine(p3,p7);
-	drawLine(p4,p8);
+//	drawTriangle(testtri);
+
+	/*
+		drawLine(p1,p2);		
+		drawLine(p3,p4);
+		drawLine(p1,p3);
+		drawLine(p2,p4);
+		drawLine(p5,p6);
+		drawLine(p7,p8);
+		drawLine(p5,p7);
+		drawLine(p6,p8);
+	
+		drawLine(p1,p5);
+		drawLine(p2,p6);
+		drawLine(p3,p7);
+		drawLine(p4,p8);
+	*/
 
 	stream <<  "P1\n" << width << " " << height << "\n";
 	for(int y = 0; y < width; y++){
