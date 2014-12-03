@@ -19,6 +19,46 @@ float IDENTITY[16] = {1,0,0,0,
 matrix mainMatrix(IDENTITY);
 matrix matrixStack[32];
 
+void scale(float cx,float cy,float cz){
+	float svals[16]={cx,0,0,0,
+			 0,cy,0,0,
+			 0,0,cz,0,
+			 0,0,0,1};
+	mainMatrix.times(svals);
+}
+
+void translate(float cx,float cy,float cz){
+	float tvals[16] = {1,0,0,cx,
+			   0,1,0,cy,
+			   0,0,1,cz,
+			   0,0,0,1};
+	mainMatrix.times(tvals);
+}
+
+void rotate(float angle,bool xr,bool yr,bool zr){
+	if(xr){
+		float rvalsx[16] = {1,         0,          0,0,
+				0,cos(angle),-sin(angle),0,
+				0,sin(angle),cos(angle) ,0,
+				0,         0,          0,1};
+		mainMatrix.times(rvalsx);
+	}
+	if(yr){
+		float rvalsy[16] = {cos(angle),0,sin(angle),0,
+				    0,1,0,0,
+				    -sin(angle),0,cos(angle),0,
+				    0,0,0,1};
+		mainMatrix.times(rvalsy);
+	}
+	if(zr){
+		float rvalsz[16] = {cos(angle),-sin(angle),0,0,
+				    sin(angle),cos(angle),0,0,
+				    0,0,1,0,
+				    0,0,0,1};
+		mainMatrix.times(rvalsz);
+	}
+}
+
 void lookAt(float ex,float ey,float ez,float cx,float cy,float cz,float ux,float uy,float uz,float near,float far){
 	float left = -5;
 	float right = 5;
@@ -144,16 +184,8 @@ int main(){
 		}
 	}
 
-	float translateTest[16] = {1,0,0,2,
-				   0,1,0,0,
-				   0,0,1,-2,
-				   0,0,0,1};
-
-	matrix transMat (translateTest);
-	lookAt(0,3,10,0,0,0,0,1,0,9,100);
-
-	mainMatrix.times(translateTest);
-			
+	lookAt(0,3,10,0,0,0,0,1,0,9,100);	
+	
 	point p1(-1,1,0);
 	point p2(1,1,0);
 	
