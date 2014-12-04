@@ -6,6 +6,7 @@ prog: main.o matrix.o point.o triangle.o
 	${CCC} main.o matrix.o point.o triangle.o -o prog4
 	echo "****Programming Assignment 4 for CS180 by John Thomason****"
 	./prog4
+	cat testimg.ppm
 	display testimg.ppm
 
 main.o: main.cpp matrix.h point.h commonvars.h triangle.h

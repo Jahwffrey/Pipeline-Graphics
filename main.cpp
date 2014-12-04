@@ -8,9 +8,11 @@
 #include <cmath>
 #include <vector>
 
+using namespace std;
+
 //Global things:
-const int width = 500;
-const int height = 500;
+const int width = 150;
+const int height = 150;
 int imageBuffer[width][height];
 float zBuffer[width][height];
 float IDENTITY[16] = {1,0,0,0,
@@ -21,21 +23,11 @@ float IDENTITY[16] = {1,0,0,0,
 matrix mainMatrix(IDENTITY);
 matrix matrixStack[32];
 int mStackPos = 0;
-std::vector<triangle> triangleVect;
-
-struct line{
-	point p1;
-	point p2;
-	triangle* tri;
-};
-
-std::vector<line> lineVect;
-
 
 void pushMatrix(){
 	if(mStackPos >= 32){
 		std::cout << "Matrix stack too deep\n";
-		exit(1);
+		//exit(1);
 	}
 	matrixStack[mStackPos] = mainMatrix;
 	mStackPos++;
@@ -44,7 +36,7 @@ void pushMatrix(){
 void popMatrix(){
 	if(mStackPos == 0){
 		std::cout << "Pop called on empty matrix stack\n";
-		exit(1);
+		//exit(1);
 	}
 	mainMatrix = matrixStack[mStackPos-1];
 	mStackPos--;
@@ -108,11 +100,11 @@ void lookAt(float ex,float ey,float ez,float cx,float cy,float cz,float ux,float
 	point u = upxw.s_times(1/upxw.magnitude()); 
 	point v = w.cross(u);
 
-	//First build the scale matrix
-	matrix S(IDENTITY);
-	S.values[0] = -(near/((right-left)/2));
-	S.values[5] = (near/((top-bottom)/2));
-	S.values[10]= 2;//1/(far);
+	//First build the p matrix
+	matrix P(IDENTITY);
+	P.values[0] = (1/far) * -(near/((right-left)/2));
+	P.values[5] = (1/far) * (near/((top-bottom)/2));
+	P.values[10]= 1/(far);
 	
 	//next build the rotation matrix
 	float rvals[16] = {u.x,u.y,u.z,0,
@@ -120,9 +112,6 @@ void lookAt(float ex,float ey,float ez,float cx,float cy,float cz,float ux,float
 			   w.x,w.y,w.z,0,
 			   0,  0,  0,  1};
 	matrix R(rvals);
-
-	//Concatenate what we have so far
-	R.times(S);
 
 	//Now build the translation matrix
 	float tvals[16] = {1,0,0,-ex,
@@ -133,8 +122,9 @@ void lookAt(float ex,float ey,float ez,float cx,float cy,float cz,float ux,float
 	matrix T(tvals);
 
 	//Bring it all together:
-	T.times(R);
-	mainMatrix.times(T);
+	R.times(T);
+	P.times(R);
+	mainMatrix.times(P);
 }
 
 //Functions:
@@ -215,39 +205,38 @@ int main(){
 		}
 	}
 
-	lookAt(0,3,10,0,0,0,0,1,0,9,100);	
+	lookAt(3,-3,10,0,0,0,0,1,0,9,100);	
 	
-	point p1(-1,1,0);
-	point p2(1,1,0);
+	point p1(-1,1,1);
+	point p2(1,1,1);
 	
-	point p3(-1,-1,0);
-	point p4(1,-1,0);	
+	point p3(-1,-1,1);
+	point p4(1,-1,1);	
 
-	point p5(-1,1,-2);
-	point p6(1,1,-2);
+	point p5(-1,1,-1);
+	point p6(1,1,-1);
 
-	point p7(-1,-1,-2);
-	point p8(1,-1,-2);
+	point p7(-1,-1,-1);
+	point p8(1,-1,-1);
 
 	triangle testtri(p1,p2,p3);
 
 //	drawTriangle(testtri);
 
-	/*
-		drawLine(p1,p2);		
-		drawLine(p3,p4);
-		drawLine(p1,p3);
-		drawLine(p2,p4);
-		drawLine(p5,p6);
-		drawLine(p7,p8);
-		drawLine(p5,p7);
-		drawLine(p6,p8);
-	
-		drawLine(p1,p5);
-		drawLine(p2,p6);
-		drawLine(p3,p7);
-		drawLine(p4,p8);
-	*/
+	drawLine(p1,p2);		
+	drawLine(p3,p4);
+	drawLine(p1,p3);
+	drawLine(p2,p4);
+	drawLine(p5,p6);
+	drawLine(p7,p8);
+	drawLine(p5,p7);
+	drawLine(p6,p8);
+
+	drawLine(p1,p5);
+	drawLine(p2,p6);
+	drawLine(p3,p7);
+	drawLine(p4,p8);
+
 
 	stream <<  "P1\n" << width << " " << height << "\n";
 	for(int y = 0; y < width; y++){
@@ -257,6 +246,5 @@ int main(){
 		stream << "\n";
 	}
 
-	
 	return 0;
 }
