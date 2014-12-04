@@ -102,7 +102,7 @@ void lookAt(float ex,float ey,float ez,float cx,float cy,float cz,float ux,float
 
 	//First build the p matrix
 	matrix P(IDENTITY);
-	P.values[0] = (1/far) * -(near/((right-left)/2));
+	P.values[0] = (1/far) * (near/((right-left)/2));
 	P.values[5] = (1/far) * (near/((top-bottom)/2));
 	P.values[10]= 1/(far);
 	
@@ -207,8 +207,6 @@ int main(){
 
 	lookAt(3,-3,10,0,0,0,0,1,0,9,100);	
 	
-	rotate(1,1,0,0);
-	
 	point p1(-1,1,1);
 	point p2(1,1,1);
 	
@@ -221,7 +219,7 @@ int main(){
 	point p7(-1,-1,-1);
 	point p8(1,-1,-1);
 
-	triangle testtri(p1,p2,p3);
+//	triangle testtri(p1,p2,p3);
 
 //	drawTriangle(testtri);
 
