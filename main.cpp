@@ -8,11 +8,9 @@
 #include <cmath>
 #include <vector>
 
-using namespace std;
-
 //Global things:
-const int width = 150;
-const int height = 150;
+const int width = 500;
+const int height = 500;
 int imageBuffer[width][height];
 float zBuffer[width][height];
 float IDENTITY[16] = {1,0,0,0,
@@ -27,7 +25,7 @@ int mStackPos = 0;
 void pushMatrix(){
 	if(mStackPos >= 32){
 		std::cout << "Matrix stack too deep\n";
-		//exit(1);
+		exit(1);
 	}
 	matrixStack[mStackPos] = mainMatrix;
 	mStackPos++;
@@ -36,7 +34,7 @@ void pushMatrix(){
 void popMatrix(){
 	if(mStackPos == 0){
 		std::cout << "Pop called on empty matrix stack\n";
-		//exit(1);
+		exit(1);
 	}
 	mainMatrix = matrixStack[mStackPos-1];
 	mStackPos--;
@@ -188,6 +186,9 @@ void drawLine(point p1, point p2){
 			err += (dy << 1);
 		}
 	}	
+	if(y2 >= 0 && y2 < height && x2 >= 0 && x2 < width){
+		(extreme ? imageBuffer[y2][x2] = 1 : imageBuffer[x2][y2] = 1);
+	}
 }
 
 int main(){
