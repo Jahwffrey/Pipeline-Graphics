@@ -98,11 +98,20 @@ void lookAt(float ex,float ey,float ez,float cx,float cy,float cz,float ux,float
 	point u = upxw.s_times(1/upxw.magnitude()); 
 	point v = w.cross(u);
 
-	//First build the p matrix
-	matrix P(IDENTITY);
-	P.values[0] = (1/far) * (near/((right-left)/2));
-	P.values[5] = (1/far) * (near/((top-bottom)/2));
-	P.values[10]= 1/(far);
+	//First build the viewport matrix
+	float vvals[16] = {((float)width)/2,0,0,((float)width-1)/2,
+			   0,((float)height)/2,0,((float)height-1)/2,
+			   0,0,1,0,
+			   0,0,0,1};
+
+	matrix V(vvals);
+
+	//Build the orthographic/projection matrix
+	float opvals[16] = {(2*near)/(right-left),0,(left+right)/(left-right),0,
+			    0,(2*near)/(top-bottom),(bottom+top)/(bottom-top),0,
+			    0,0,(far+near)/(near-far),(2*far*near)/(far-near),
+			    0,0,1,0};
+	matrix OP(opvals);
 	
 	//next build the rotation matrix
 	float rvals[16] = {u.x,u.y,u.z,0,
@@ -119,21 +128,20 @@ void lookAt(float ex,float ey,float ez,float cx,float cy,float cz,float ux,float
 
 	matrix T(tvals);
 
-	//Bring it all together:
+	//Bring it all together: (I)VOPRT
 	R.times(T);
-	P.times(R);
-	mainMatrix.times(P);
+	OP.times(R);
+	V.times(OP);
+	mainMatrix.times(V);
 }
 
 //Functions:
 void drawLine(point p1, point p2){
-	int x1 = (int)(((p1.x/p1.z)*width)+(width/2));
-	int y1 = (int)(((p1.y/p1.z)*height)+(height/2));
-	float z1 = p1.z;
-
-	int x2 = (int)(((p2.x/p2.z)*width)+(width/2));
-	int y2 = (int)(((p2.y/p2.z)*height)+(height/2));
- 	float z2 = p2.z;
+	//The OP transform lost all Z (depth) information, storing it instead in w);
+	int x1 = (int)((p1.x/p1.w));
+	int y1 = (int)((p1.y/p1.w));
+	int x2 = (int)((p2.x/p2.w));
+	int y2 = (int)((p2.y/p2.w));
 
 	bool extreme = false;
 	
@@ -159,11 +167,8 @@ void drawLine(point p1, point p2){
 		y2 = temp;
 	}
 
-
 	int dx = x2 - x1;
 	int dy = abs(y2 - y1);
-	float dz = z2 - z1;	
-
 	int err = (dy << 1) - dx;
 	int y = y1;
 
