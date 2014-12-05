@@ -80,11 +80,11 @@ void rotate(float angle,bool xr,bool yr,bool zr){
 	}
 }
 
-void lookAt(float ex,float ey,float ez,float cx,float cy,float cz,float ux,float uy,float uz,float near,float far){
-	float left = -10;
-	float right = 10;
-	float top = -10;
-	float bottom = 10;
+void lookAt(float ex,float ey,float ez,float cx,float cy,float cz,float ux,float uy,float uz,float near,float far,float fov){
+	float left = -fov/2;
+	float right = fov/2;
+	float top = -fov/2;
+	float bottom = fov/2;
 
 	point eye(ex,ey,ez);
 	point up(ux,uy,uz);
@@ -146,7 +146,8 @@ void drawLine(point p1, point p2){
 	float z2 = p2.w;
 
 	bool extreme = false;
-
+	bool swapped = false;
+	
 	//If the y change is more than the x change
 	if(std::abs(y2 - y1) > std::abs(x2 - x1)){
 		extreme = true;
@@ -161,12 +162,16 @@ void drawLine(point p1, point p2){
 
 	//if x2 is greater than x1, switch the order of drawing
 	if(x1 > x2){
+		swapped = true;
 		int temp = x1;
 		x1 = x2;
 		x2 = temp;
 		temp = y1;
 		y1 = y2;
 		y2 = temp;
+		float tempp = z1;
+		z1 = z2;
+		z2 = tempp;
 	}
 
 	int dx = x2 - x1;
@@ -177,13 +182,13 @@ void drawLine(point p1, point p2){
 	//Account for positive slopes
 	int ymod = ((y2 < y1) ? (-1) : (1));
 
-	float tolerance = .1;
+	float tolerance = .2;
 	
 	//I may need to center this around the origin by adding width/2 or height/2 to indicies of imageBuffer
-	for(int x = x1+1; x < x2; x++){
+	for(int x = x1+1; x <= x2; x++){
 		float length = pow(pow(x2-x1,2)+pow(y2-y1,2),.5);
 		float l1;
-		if(extreme){
+		if(extreme || swapped){
 			l1 = pow(pow(x2-(x+.5),2)+pow(y2-(y+.5),2),.5);
 		} else {
 			l1 = pow(pow(x1-(x+.5),2)+pow(y1-(y+.5),2),.5);
@@ -224,10 +229,7 @@ void drawLine(point p1, point p2){
 			err += (dy << 1);
 		}
 	}
-	/*	
-	if(y2 >= 0 && y2 < height && x2 >= 0 && x2 < width){
-		(extreme ? imageBuffer[y2][x2] = 1 : imageBuffer[x2][y2] = 1);
-	}*/
+
 }
 
 float geometricLineCheck(int x1,int y1,int x2,int y2,float testx,float testy){
@@ -279,9 +281,34 @@ void drawTriangle(triangle tri){
 	}
 
 	//now draw the lines:
-	if(tri.drawLine12) drawLine(tri.p1,tri.p2);
-	if(tri.drawLine23) drawLine(tri.p2,tri.p3);
-	if(tri.drawLine31) drawLine(tri.p3,tri.p1);
+	//THERE IS A BUG SOMEWHERE IN MY LINE INTERPOLATION
+	//DRAWING LINE FROM BOTH DIRECTIOSN WORKS, BUT THIS IS NOT A REAL FIX
+	//FIND AN ACTUAL FIX BEFORE FINISHING
+	if(tri.drawLine12){
+		drawLine(tri.p1,tri.p2);
+		drawLine(tri.p2,tri.p1);
+	}
+	if(tri.drawLine23){
+		drawLine(tri.p2,tri.p3);
+		drawLine(tri.p3,tri.p2);
+	}
+	if(tri.drawLine31){
+		drawLine(tri.p3,tri.p1);
+		drawLine(tri.p1,tri.p3);
+	}
+}
+
+void makeTriangle(point p1,point p2,point p3,bool drawLine12,bool drawLine23,bool drawLine31){
+	drawTriangle(triangle (p1,p2,p3,drawLine12,drawLine23,drawLine31));
+}
+
+void makeTriangle(point p1,point p2,point p3){
+	drawTriangle(triangle (p1,p2,p3));
+}
+
+void makeSquare(point p1,point p2,point p3,point p4){
+	makeTriangle(p1,p2,p3,true,true,false);
+	makeTriangle(p1,p4,p3,true,true,false);
 }
 
 int main(){
@@ -300,53 +327,25 @@ int main(){
 		}
 	}
 
-	lookAt(3,-8,10,0,0,0,0,1,0,9,100);	
-	
-	point p1(-5,5,2);
-	point p2(5,5,2);
-	
-	point p3(-5,-5,2);
-	point p4(5,-5,2);	
-
-	point p5(-5,5,-8);
-	point p6(5,5,-8);
-
-	point p7(-5,-5,-8);
-	point p8(5,-5,-8);
-
+	lookAt(8,-8,10,0,0,0,0,1,0,9,100,20);	
 	//MODIFY THE LOOKAT FUNCTION TO INCLUDE A SCREEN WIDTH
-
-	triangle testtri(p1,p2,p3);
-	triangle testtri2(p5,p6,p8);
-	triangle testtri3(p5,p7,p1);
 	
-	drawTriangle(testtri);
-	drawTriangle(testtri2);
-	drawTriangle(testtri3);
-	//drawTriangle(testtri);
+	makeSquare(point (-5,5,-5),point(5,5,-5),point(5,5,5),point (-5,5,5));
+	makeSquare(point (-5,-5,-5),point(5,-5,-5),point(5,-5,5),point (-5,-5,5));
+	for(int i = 0;i < 4;i++){
+		pushMatrix();
+			rotate((3.1415926/2)*i,false,true,false);
+			makeSquare(point (-5,-5,5),point (-5,5,5),point (5,5,5),point (5,-5,5));
+		popMatrix();
+	}
 	
-	/*drawLine(p1,p2);		
-	drawLine(p3,p4);
-	drawLine(p1,p3);
-	drawLine(p2,p4);
-	drawLine(p5,p6);
-	drawLine(p7,p8);
-	drawLine(p5,p7);
-	drawLine(p6,p8);
-
-	drawLine(p1,p5);
-	drawLine(p2,p6);
-	drawLine(p3,p7);
-	drawLine(p4,p8);*/
-
-
 	stream <<  "P1\n" << width << " " << height << "\n";
 	for(int y = 0; y < width; y++){
 		for(int x = 0; x < width; x++){
 			stream << imageBuffer[x][y];
 		}	
 		stream << "\n";
-	}
+	}	
 
 	return 0;
 }
