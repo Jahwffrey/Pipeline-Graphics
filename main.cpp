@@ -11,6 +11,7 @@
 //Global things:
 const int width = 500;
 const int height = 500;
+float TAU = 6.283185307;
 int imageBuffer[width][height];
 float zBuffer[width][height];
 float IDENTITY[16] = {1,0,0,0,
@@ -186,15 +187,19 @@ void drawLine(point p1, point p2){
 	
 	//I may need to center this around the origin by adding width/2 or height/2 to indicies of imageBuffer
 	for(int x = x1+1; x <= x2; x++){
-		float length = pow(pow(x2-x1,2)+pow(y2-y1,2),.5);
-		float l1;
-		if(extreme || swapped){
+		double length = pow(pow(x2-x1,2)+pow(y2-y1,2),.5);
+		double l1;
+		double l2;
+		double depth;
+		if(extreme && false){
 			l1 = pow(pow(x2-(x+.5),2)+pow(y2-(y+.5),2),.5);
+			l2 = length - l1;
+			depth = (l1/length)*z1 + (l2/length)*z2;		
 		} else {
 			l1 = pow(pow(x1-(x+.5),2)+pow(y1-(y+.5),2),.5);
+			l2 = length - l1;
+			depth = (l1/length)*z2 + (l2/length)*z1;		
 		}
-		float l2 = length - l1;
-		float depth = (l1/length)*z1 + (l2/length)*z2;		
 		if(err > 0){
 			y += ymod;
 			if(y >= 0 && y < height && x >= 0 && x < width){
@@ -311,6 +316,96 @@ void makeSquare(point p1,point p2,point p3,point p4){
 	makeTriangle(p1,p4,p3,true,true,false);
 }
 
+void makeSquare(point p1,point p2,point p3,point p4,bool dL12,bool dL23,bool dL34,bool dL41){
+	makeTriangle(p1,p2,p3,dL12,dL23,false);
+	makeTriangle(p1,p4,p3,dL41,dL34,false);
+}
+
+void deepTriangle(point p1,point p2,point p3,float depth,bool dL12,bool dL23,bool dL31){
+	point p11(p1.x,p1.y,p1.z);
+	point p22(p2.x,p2.y,p2.z);
+	point p33(p3.x,p3.y,p3.z);
+	makeTriangle(p11,p22,p33,dL12,dL23,dL31);
+	point p1d(p1.x,p1.y,p1.z-depth);
+	point p2d(p2.x,p2.y,p2.z-depth);
+	point p3d(p3.x,p3.y,p3.z-depth);
+	makeTriangle(p1d,p2d,p3d,dL12,dL23,dL31);
+	makeSquare(p11,p1d,p2d,p22,true,dL12,true,dL12);
+	makeSquare(p22,p2d,p3d,p33,true,dL23,true,dL23);
+	makeSquare(p33,p3d,p1d,p11,true,dL31,true,dL31);
+}
+
+void deepSquare(point p1,point p2,point p3,point p4,float depth,bool dL12,bool dL23,bool dL34,bool dL41,bool dLeftFace,bool dRightFace){
+	point p11(p1.x,p1.y,p1.z);
+	point p22(p2.x,p2.y,p2.z);
+	point p33(p3.x,p3.y,p3.z);
+	point p44(p4.x,p4.y,p4.z);
+	makeSquare(p11,p22,p33,p44,dL12,dL23,dL34,dL41);
+	point p1d(p1.x,p1.y,p1.z-depth);
+	point p2d(p2.x,p2.y,p2.z-depth);
+	point p3d(p3.x,p3.y,p3.z-depth);
+	point p4d(p4.x,p4.y,p4.z-depth);
+	makeSquare(p1d,p2d,p3d,p4d,dL12,dL23,dL34,dL41);
+	makeSquare(p11,p1d,p2d,p22,dLeftFace,dL12,dRightFace,dL12);
+	makeSquare(p22,p2d,p3d,p33,dRightFace,dL23,dRightFace,dL23);
+	makeSquare(p33,p3d,p4d,p44,dRightFace,dL34,dLeftFace,dL34);
+	makeSquare(p44,p4d,p1d,p11,dLeftFace,dL41,dLeftFace,dL41);
+}
+
+void drawBox(){
+for(int i = 0;i < 6;i++){
+		pushMatrix();
+			if(i < 4){
+			rotate((TAU/4)*i,false,true,false);
+			} else {
+				if(i==4){
+					rotate(TAU/4,true,false,false);
+				} else {
+					rotate(-TAU/4,true,false,false);
+				}
+			}
+			makeSquare(point (-6,-6,6),point (-4,-6,6),point (-4,-4,6),point (-6,-4,6),true,false,false,true);
+			makeSquare(point (-4,-6,6),point (4,-6,6),point (4,-4,6),point (-4,-4,6),true,false,true,false);
+			makeSquare(point (4,-6,6),point (6,-6,6),point (6,-4,6),point (4,-4,6),true,true,false,false);
+			makeSquare(point (4,-4,6),point (6,-4,6), point (6,4,6),point (4,4,6), false,true,false,true);
+			makeSquare(point (4,4,6),point (6,4,6),point (6,6,6),point (4,6,6),false,true,true,false);
+			makeSquare(point (-4,6,6),point (4,6,6),point (4,4,6),point (-4,4,6),true,false,true,false);
+			makeSquare(point (-6,4,6),point (-4,4,6),point (-4,6,6),point (-6,6,6),false,false,true,true);
+			makeSquare(point (-4,-4,6),point (-6,-4,6), point (-6,4,6),point (-4,4,6), false,true,false,true);
+			for(int ii = 0;ii < 4;ii++){
+				pushMatrix();
+					rotate((TAU/4)*ii,false,false,true);
+					makeSquare(point (-4,-4,6),point (-4,-4,5),point (-4,4,5),point (-4,4,6));
+				popMatrix();
+			}
+			makeSquare(point (-4,-4,5),point (4,-4,5),point (4,4,5),point (-4,4,5));
+		popMatrix();
+	}	
+
+}
+
+void display(){
+	//box1
+	pushMatrix();
+		rotate(-.3,false,true,false);
+		drawBox();
+		//triangle face front
+		pushMatrix();
+			translate(0,0,6);
+			deepTriangle(point (0,-3,0,1),point (2.5,2,0,1),point (-2.5,2,0,1),1,true,true,true);
+		popMatrix();
+		//T face right
+		pushMatrix();
+			translate(6,0,0);
+			rotate(TAU/4,false,true,false);
+			deepSquare(point (-2.5,-2.5,0,1),point (-.5,-2.5,0,1),point (-.5,-1.5,0,1),point (-2.5,-1.5,0,1),1,true,false,true,true,true,false);
+			deepSquare(point (2.5,-2.5,0,1),point (.5,-2.5,0,1),point (.5,-1.5,0,1),point (2.5,-1.5,0,1),1,true,false,true,true,true,false);
+			deepSquare(point (-.5,-2.5,0,1),point (.5,-2.5,0,1),point (.5,-1.5,0,1),point (-.5,-1.5,0,1),1,true,false,false,false,false,false);
+			deepSquare(point (-.5,-1.5,0,1),point (.5,-1.5,0,1),point (.5,2.5,0,1),point (-.5,2.5,0,1),1,false,true,true,true,true,true);
+		popMatrix();
+	popMatrix();
+}
+
 int main(){
 	std::ofstream stream;
 	stream.open("testimg.ppm");
@@ -327,17 +422,9 @@ int main(){
 		}
 	}
 
-	lookAt(8,-8,10,0,0,0,0,1,0,9,100,20);	
-	//MODIFY THE LOOKAT FUNCTION TO INCLUDE A SCREEN WIDTH
-	
-	makeSquare(point (-5,5,-5),point(5,5,-5),point(5,5,5),point (-5,5,5));
-	makeSquare(point (-5,-5,-5),point(5,-5,-5),point(5,-5,5),point (-5,-5,5));
-	for(int i = 0;i < 4;i++){
-		pushMatrix();
-			rotate((3.1415926/2)*i,false,true,false);
-			makeSquare(point (-5,-5,5),point (-5,5,5),point (5,5,5),point (5,-5,5));
-		popMatrix();
-	}
+	lookAt(10,-10,20,0,0,0,0,1,0,10,100,20);	
+	display();
+
 	
 	stream <<  "P1\n" << width << " " << height << "\n";
 	for(int y = 0; y < width; y++){
