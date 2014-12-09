@@ -6,7 +6,8 @@
 #include "triangle.h"
 #include <iostream>
 #include <cmath>
-#include <vector>
+#include <string>
+#include <sstream>
 
 //Global things:
 const int width = 600;
@@ -191,7 +192,7 @@ void drawLine(point p1, point p2){
 		double l1;
 		double l2;
 		double depth;
-		if(extreme && false){
+		if(extreme){
 			l1 = pow(pow(x2-(x+.5),2)+pow(y2-(y+.5),2),.5);
 			l2 = length - l1;
 			depth = (l1/length)*z1 + (l2/length)*z2;		
@@ -268,6 +269,8 @@ void drawTriangle(triangle tri){
 	for(int y = miny;y <= maxy;y++){
 		for(int x = minx;x <= maxx;x++){
 
+			float tolerance = .3;
+
 			float alpha = geometricLineCheck(x2,y2,x3,y3,(float)x+.5,(float)y+.5)/geometricLineCheck(x2,y2,x3,y3,(float)x1,(float)y1);
 			float beta = geometricLineCheck(x3,y3,x1,y1,(float)x+.5,(float)y+.5)/geometricLineCheck(x3,y3,x1,y1,(float)x2,(float)y2);
 			float gamma = geometricLineCheck(x1,y1,x2,y2,(float)x+.5,(float)y+.5)/geometricLineCheck(x1,y1,x2,y2,(float)x3,(float)y3);
@@ -276,9 +279,20 @@ void drawTriangle(triangle tri){
 				if(y >= 0 && y < height && x >= 0 && x < width){
 					//Interpolate the depths to get the depth at a point and fill the z buffer
 					float depth = alpha*z1 + beta*z2 + gamma*z3;
-					if(zBuffer[x][y] < depth){
+					if(zBuffer[x][y] <= depth){
+						if(depth - zBuffer[x][y] > tolerance){
+							imageBuffer[x][y] = 0;
+						}
 						zBuffer[x][y] = depth;
-						imageBuffer[x][y] = 0;
+						/*if(alpha < .1 && tri.drawLine23){
+							imageBuffer[x][y] = 1;
+						}
+						if(beta < .1 && tri.drawLine31){
+							imageBuffer[x][y] = 1;
+						}
+						if(gamma < .1 && tri.drawLine12){
+							imageBuffer[x][y] = 1;
+						}*/
 					}
 				}
 			}
@@ -384,6 +398,23 @@ for(int i = 0;i < 6;i++){
 
 }
 
+void makeShape(float radius,float numSides,float depth){
+	float x1 = radius;
+        float y1 = 0;
+        float xn = 0;
+        float yn = 0;
+        float theta = 0;
+        for(int i = 1;i <= numSides;i++){
+                theta = i*(TAU/numSides);
+                xn = radius*cos(theta);
+                yn = radius*sin(theta);
+                deepTriangle(point (0,0,0,1),point (x1,y1,0,1),point (xn,yn,0,1),1,false,true,false);
+                x1=xn;
+                y1=yn;
+        }
+
+}
+
 void display(int frame){
 	//box1
 	pushMatrix();
@@ -421,19 +452,33 @@ void display(int frame){
 			deepTriangle(point (0,-2.5,0,1),point (2,0,0,1),point (-2,0,0,1),1,true,false,true);
 			deepTriangle(point (0,2.5,0,1),point (2,0,0,1),point (-2,0,0,1),1,true,false,true);
 		popMatrix();
+		//dice 1 face top
+		pushMatrix();
+			translate(0,-6,0);
+			rotate(TAU/4,true,false,false);
+			makeShape(2.5,20,1);
+		popMatrix();
+		// / face bottom
+		pushMatrix();
+			translate(0,6,0);
+			rotate(-TAU/4,true,false,false);
+			deepSquare(point (2,-2.5,0,1),point (2.5,-2.5,0,1),point (-2,2.5,0,1),point (-2.5,2.5,0,1),1,true,true,true,true,true,true);
+		popMatrix();
 	popMatrix();
 }
 
 int main(){
-	std::ofstream stream;
-	stream.open("testimg.ppm");
 
 	//Greater x = Farther Right
 	//Greater y = Farther Down
 	//Greater z = Farther Back
 	
 	//for the image buffer, a greater number of the first is farther right. Greater of second is father down.
-	//for(int i = 0;i < 50;i++){
+	for(int i = 100;i < 101;i++){
+		std::ofstream stream;
+		std::ostringstream fname;
+		fname << "img" << i << ".ppm";
+		stream.open(fname.str());
 		for(int r = 0; r < width; r++){
 			for(int ii = 0; ii < height; ii++){
 				imageBuffer[r][ii] = 0;
@@ -443,8 +488,8 @@ int main(){
 	
 		mainMatrix = IDENTITY;	
 
-		lookAt(10,-10,20,0,0,0,0,1,0,10,100,20);	
-		display(11);
+		lookAt(0,0,20,0,0,0,0,1,0,10,100,20);	
+		display(i);
 	
 		stream <<  "P1\n" << width << " " << height << "\n";
 		for(int y = 0; y < width; y++){
@@ -454,7 +499,7 @@ int main(){
 			stream << "\n";
 		}	
 
-	//}
+	}
 
 	return 0;
 }
