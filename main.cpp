@@ -9,8 +9,8 @@
 #include <vector>
 
 //Global things:
-const int width = 500;
-const int height = 500;
+const int width = 600;
+const int height = 600;
 float TAU = 6.283185307;
 int imageBuffer[width][height];
 float zBuffer[width][height];
@@ -291,15 +291,15 @@ void drawTriangle(triangle tri){
 	//FIND AN ACTUAL FIX BEFORE FINISHING
 	if(tri.drawLine12){
 		drawLine(tri.p1,tri.p2);
-		drawLine(tri.p2,tri.p1);
+		//drawLine(tri.p2,tri.p1);
 	}
 	if(tri.drawLine23){
 		drawLine(tri.p2,tri.p3);
-		drawLine(tri.p3,tri.p2);
+		//drawLine(tri.p3,tri.p2);
 	}
 	if(tri.drawLine31){
 		drawLine(tri.p3,tri.p1);
-		drawLine(tri.p1,tri.p3);
+		//drawLine(tri.p1,tri.p3);
 	}
 }
 
@@ -384,10 +384,11 @@ for(int i = 0;i < 6;i++){
 
 }
 
-void display(){
+void display(int frame){
 	//box1
 	pushMatrix();
-		rotate(-.3,false,true,false);
+	//	rotate(-.3,false,true,false);
+		rotate(frame*.1,false,true,false);
 		drawBox();
 		//triangle face front
 		pushMatrix();
@@ -403,6 +404,23 @@ void display(){
 			deepSquare(point (-.5,-2.5,0,1),point (.5,-2.5,0,1),point (.5,-1.5,0,1),point (-.5,-1.5,0,1),1,true,false,false,false,false,false);
 			deepSquare(point (-.5,-1.5,0,1),point (.5,-1.5,0,1),point (.5,2.5,0,1),point (-.5,2.5,0,1),1,false,true,true,true,true,true);
 		popMatrix();
+		//+ face left
+		pushMatrix();
+			translate(-6,0,0);
+			rotate(-TAU/4,false,true,false);
+			deepSquare(point (-2.5,-.5,0,1),point (-.5,-.5,0,1),point (-.5,.5,0,1),point(-2.5,.5,0,1),1,true,false,true,true,true,false);
+			deepSquare(point (2.5,-.5,0,1),point (.5,-.5,0,1),point (.5,.5,0,1),point(2.5,.5,0,1),1,true,false,true,true,true,false);
+			deepSquare(point (-.5,-2.5,0,1),point (.5,-2.5,0,1),point (.5,-.5,0,1),point (-.5,-.5,0,1),1,true,true,false,true,true,true);
+			deepSquare(point (-.5,2.5,0,1),point (.5,2.5,0,1),point (.5,.5,0,1),point (-.5,.5,0,1),1,true,true,false,true,true,true);
+			makeSquare(point (-.5,-.5,0),point (.5,-.5,0),point (.5,.5,0),point (-.5,.5,0),false,false,false,false);
+		popMatrix();
+		//diamond face back
+		pushMatrix();
+			translate(0,0,-6);
+			rotate(TAU/2,false,true,false);
+			deepTriangle(point (0,-2.5,0,1),point (2,0,0,1),point (-2,0,0,1),1,true,false,true);
+			deepTriangle(point (0,2.5,0,1),point (2,0,0,1),point (-2,0,0,1),1,true,false,true);
+		popMatrix();
 	popMatrix();
 }
 
@@ -415,24 +433,28 @@ int main(){
 	//Greater z = Farther Back
 	
 	//for the image buffer, a greater number of the first is farther right. Greater of second is father down.
-	for(int i = 0; i < width; i++){
-		for(int ii = 0; ii < height; ii++){
-			imageBuffer[i][ii] = 0;
-			zBuffer[i][ii] = -100; //Set z buffer to farther away than actually possible
+	//for(int i = 0;i < 50;i++){
+		for(int r = 0; r < width; r++){
+			for(int ii = 0; ii < height; ii++){
+				imageBuffer[r][ii] = 0;
+				zBuffer[r][ii] = -100; //Set z buffer to farther away than actually possible
+			}
 		}
-	}
-
-	lookAt(10,-10,20,0,0,0,0,1,0,10,100,20);	
-	display();
-
 	
-	stream <<  "P1\n" << width << " " << height << "\n";
-	for(int y = 0; y < width; y++){
-		for(int x = 0; x < width; x++){
-			stream << imageBuffer[x][y];
+		mainMatrix = IDENTITY;	
+
+		lookAt(10,-10,20,0,0,0,0,1,0,10,100,20);	
+		display(11);
+	
+		stream <<  "P1\n" << width << " " << height << "\n";
+		for(int y = 0; y < width; y++){
+			for(int x = 0; x < width; x++){
+				stream << imageBuffer[x][y];
+			}	
+			stream << "\n";
 		}	
-		stream << "\n";
-	}	
+
+	//}
 
 	return 0;
 }
