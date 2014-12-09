@@ -335,6 +335,17 @@ void deepTriangle(point p1,point p2,point p3,float depth,bool dL12,bool dL23,boo
 	makeSquare(p33,p3d,p1d,p11,true,dL31,true,dL31);
 }
 
+void deepTriangleForShape(point p1,point p2,point p3,float depth,bool dL12,bool dL23,bool dL31){
+	point p11(p1.x,p1.y,p1.z);
+	point p22(p2.x,p2.y,p2.z);
+	point p33(p3.x,p3.y,p3.z);
+	makeTriangle(p11,p22,p33,dL12,dL23,dL31);
+	point p1d(p1.x,p1.y,p1.z-depth);
+	point p2d(p2.x,p2.y,p2.z-depth);
+	point p3d(p3.x,p3.y,p3.z-depth);
+	makeTriangle(p1d,p2d,p3d,dL12,dL23,dL31);
+	makeSquare(p11,p1d,p2d,p22,false,dL12,true,dL12);
+}
 void deepSquare(point p1,point p2,point p3,point p4,float depth,bool dL12,bool dL23,bool dL34,bool dL41,bool dLeftFace,bool dRightFace){
 	point p11(p1.x,p1.y,p1.z);
 	point p22(p2.x,p2.y,p2.z);
@@ -394,7 +405,7 @@ void makeShape(float radius,float numSides,float depth){
                 theta = i*(TAU/numSides);
                 xn = radius*cos(theta);
                 yn = radius*sin(theta);
-                deepTriangle(point (0,0,0,1),point (x1,y1,0,1),point (xn,yn,0,1),1,false,true,false);
+                deepTriangleForShape(point (0,0,0,1),point (x1,y1,0,1),point (xn,yn,0,1),1,false,true,false);
                 x1=xn;
                 y1=yn;
         }
@@ -515,7 +526,7 @@ void display(int frame){
 	
 	//Box3
 	pushMatrix();
-		translate(0,0,0);
+		translate(0,0,-30);
 		rotate(-.5,false,true,false);
 		rotate((frame*-1)*.1,false,true,false);
 		drawBox();
@@ -583,6 +594,82 @@ void display(int frame){
 		popMatrix();
 	popMatrix();
 
+	//Box4
+	pushMatrix();
+		translate(0,0,0);
+		rotate(-2,false,true,false);
+		rotate((frame*.7)*.1,false,true,false);
+		drawBox();
+		//Hexagon face front
+		pushMatrix();
+			translate(0,0,6);
+			makeShape(2.5,6,1);
+		popMatrix();
+		//H face right
+		pushMatrix();
+			translate(6,0,0);
+			rotate(TAU/4,false,true,false);
+			deepSquare(point (-2.5,-2.5,0,1),point (-2,-2.5,0,1),point (-2,-.5,0,1),point (-2.5,-.5,0,1),1,true,true,false,true,false,true);			
+			deepSquare(point (-2.5,2.5,0,1),point (-2,2.5,0,1),point (-2,.5,0,1),point (-2.5,.5,0,1),1,true,true,false,true,false,true);			
+			deepSquare(point (-2.5,-.5,0,1),point (-2,-.5,0,1),point (-2,.5,0,1),point (-2.5,.5,0,1),1,false,false,false,true,false,false);
+			makeSquare(point (-2.5,-2.5,0),point (-2.5,-2.5,-1),point (-2.5,2.5,-1),point (-2.5,2.5,0),true,true,true,true);
+			deepSquare(point (2.5,-2.5,0,1),point (2,-2.5,0,1),point (2,-.5,0,1),point (2.5,-.5,0,1),1,true,true,false,true,false,true);			
+			deepSquare(point (2.5,2.5,0,1),point (2,2.5,0,1),point (2,.5,0,1),point (2.5,.5,0,1),1,true,true,false,true,false,true);			
+			deepSquare(point (2.5,-.5,0,1),point (2,-.5,0,1),point (2,.5,0,1),point (2.5,.5,0,1),1,false,false,false,true,false,false);
+			makeSquare(point (2.5,-2.5,0),point (2.5,-2.5,-1),point (2.5,2.5,-1),point (2.5,2.5,0),true,true,true,true);
+			deepSquare(point (-2,-.5,0,1),point (2,-.5,0,1),point (2,.5,0,1),point (-2,.5,0,1),1,true,false,true,false,false,false);
+		popMatrix();
+		//% face left
+		pushMatrix();
+			translate(-6,0,0);
+			rotate(-TAU/4,false,true,false);
+			deepSquare(point (-2.5,-.5,0,1),point (2.5,-.5,0,1),point (2.5,.5,0,1),point(-2.5,.5,0,1),1,true,true,true,true,true,true);
+			pushMatrix();
+				translate(0,-2,0);
+				makeShape(1,15,1);
+			popMatrix();
+			pushMatrix();
+				translate(0,2,0);
+				makeShape(1,15,1);
+			popMatrix();
+		popMatrix();
+		//V face back
+		pushMatrix();
+			translate(0,0,-6);
+			rotate(TAU/2,false,true,false);
+			deepSquare(point (-2.5,-2.5,0,1),point (-1.5,-2.5,0,1),point (0,1,0,1),point (0,2.5,0,1),1,true,true,false,true,true,true);
+			deepSquare(point (2.5,-2.5,0,1),point (1.5,-2.5,0,1),point (0,1,0,1),point (0,2.5,0,1),1,true,true,false,true,true,true);
+		popMatrix();
+		//dice 4 face top
+		pushMatrix();
+			translate(0,-6,0);
+			rotate(TAU/4,true,false,false);
+			pushMatrix();
+				translate(1.9,-1.9,0);
+				makeShape(1.25,20,1);
+			popMatrix();
+			pushMatrix();
+				translate(-1.9,1.9,0);
+				makeShape(1.25,20,1);
+			popMatrix();
+			pushMatrix();
+				translate(-1.9,-1.9,0);
+				makeShape(1.25,20,1);
+			popMatrix();
+			pushMatrix();
+				translate(1.9,1.9,0);
+				makeShape(1.25,20,1);
+			popMatrix();
+		popMatrix();
+		//circle face bottom
+		pushMatrix();
+			translate(0,6,0);
+			rotate(-TAU/4,true,false,false);
+			makeShape(2.5,25,1);
+		popMatrix();
+	popMatrix();
+
+
 }
 
 int main(){
@@ -606,7 +693,7 @@ int main(){
 	
 		mainMatrix = IDENTITY;	
 
-		lookAt(-15,20,20,0,0,0,0,1,0,10,100,20);	
+		lookAt(-15,-5,20,0,0,0,0,1,0,10,100,20);	
 		display(i);
 	
 		stream <<  "P1\n" << width << " " << height << "\n";
