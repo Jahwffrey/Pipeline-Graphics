@@ -418,7 +418,7 @@ void makeShape(float radius,float numSides,float depth){
 void display(int frame){
 	//box1
 	pushMatrix();
-	//	rotate(-.3,false,true,false);
+		translate(-7,0,-20);
 		rotate(frame*.1,false,true,false);
 		drawBox();
 		//triangle face front
@@ -456,7 +456,7 @@ void display(int frame){
 		pushMatrix();
 			translate(0,-6,0);
 			rotate(TAU/4,true,false,false);
-			makeShape(2.5,20,1);
+			makeShape(1.25,20,1);
 		popMatrix();
 		// / face bottom
 		pushMatrix();
@@ -465,6 +465,69 @@ void display(int frame){
 			deepSquare(point (2,-2.5,0,1),point (2.5,-2.5,0,1),point (-2,2.5,0,1),point (-2.5,2.5,0,1),1,true,true,true,true,true,true);
 		popMatrix();
 	popMatrix();
+
+	//Box2
+	pushMatrix();
+		translate(0,0,0);
+		rotate(1.56,false,true,false);
+		rotate((frame*1.3)*.1,false,true,false);
+		drawBox();
+		//Square face front
+		pushMatrix();
+			translate(0,0,6);
+			deepSquare(point (-2.5,-2.5,0,1),point (2.5,-2.5,0,1),point (2.5,2.5,0,1),point (-2.5,2.5,0,1),1,true,true,true,true,true,true);
+		popMatrix();
+		//E face right
+		pushMatrix();
+			translate(6,0,0);
+			rotate(TAU/4,false,true,false);
+			deepSquare(point (-2.5,-2.5,0,1),point (-2,-2.5,0,1),point (-2,-2,0,1),point (-2.5,-2,0,1),1,true,false,false,true,false,false);
+			deepSquare(point (-2,-2.5,0,1),point (2.5,-2.5,0,1),point (2.5,-2,0,1),point (-2,-2,0,1),1,true,true,true,false,false,true);
+			deepSquare(point (-2.5,2.5,0,1),point (-2,2.5,0,1),point (-2,2,0,1),point (-2.5,2,0,1),1,true,false,false,true,false,false);
+			deepSquare(point (-2,2.5,0,1),point (2.5,2.5,0,1),point (2.5,2,0,1),point (-2,2,0,1),1,true,true,true,false,false,true);
+			deepSquare(point (-2,-.25,0,1),point (2.5,-.25,0,1),point (2.5,.25,0,1),point (-2,.25,0,1),1,true,true,true,false,false,true);
+			deepSquare(point (-2.5,-.25,0,1),point (-2,-.25,0,1),point (-2,.25,0,1),point (-2.5,.25,0,1),1,false,false,false,true,false,false);
+			deepSquare(point (-2.5,-2,0,1),point (-2,-2,0,1),point (-2,-.25,0,1),point (-2.5,-.25,0,1),1,false,true,false,true,false,true);
+			deepSquare(point (-2.5,2,0,1),point (-2,2,0,1),point (-2,.25,0,1),point (-2.5,.25,0,1),1,false,true,false,true,false,true);
+			makeSquare(point (-2.5,-2.5,0),point (-2.5,-2.5,-1),point (-2.5,2.5,-1),point (-2.5,2.5,0),true,true,true,true);
+		popMatrix();
+		//- face left
+		pushMatrix();
+			translate(-6,0,0);
+			rotate(-TAU/4,false,true,false);
+			deepSquare(point (-2.5,-.5,0,1),point (2.5,-.5,0,1),point (2.5,.5,0,1),point (-2.5,.5,0,1),1,true,true,true,true,true,true);
+		popMatrix();
+		//trapezoid face back
+		pushMatrix();
+			translate(0,0,-6);
+			rotate(TAU/2,false,true,false);
+			deepTriangle(point (-2.5,1.5,0,1),point (-1,-2.5,0,1),point (-1,1.5,0,1),1,true,false,true);
+			deepTriangle(point (2.5,1.5,0,1),point (1,-2.5,0,1),point (1,1.5,0,1),1,true,false,true);
+			deepSquare(point (-1,-2.5,0,1),point (1,-2.5,0,1),point (1,1.5,0,1),point (-1,1.5,0,1),1,true,false,true,false,false,false);
+		popMatrix();
+		//dice 2 face top
+		pushMatrix();
+			translate(0,-6,0);
+			rotate(TAU/4,true,false,false);
+			pushMatrix();
+				translate(1.5,-1.5,0);
+				makeShape(1.25,20,1);
+			popMatrix();
+			pushMatrix();
+				translate(-1.5,1.5,0);
+				makeShape(1.25,20,1);
+			popMatrix();
+
+		popMatrix();
+		//hourglass face bottom
+		pushMatrix();
+			translate(0,6,0);
+			rotate(-TAU/4,true,false,false);
+			deepTriangle(point (-2.5,-2.5,0,1),point (2.5,-2.5,0,1),point (0,0,0,1),1,true,true,true);
+			deepTriangle(point (-2.5,2.5,0,1),point (2.5,2.5,0,1),point (0,0,0,1),1,true,true,true);
+		popMatrix();
+	popMatrix();
+
 }
 
 int main(){
@@ -474,7 +537,7 @@ int main(){
 	//Greater z = Farther Back
 	
 	//for the image buffer, a greater number of the first is farther right. Greater of second is father down.
-	for(int i = 100;i < 101;i++){
+	for(int i = 100;i < 251;i++){
 		std::ofstream stream;
 		std::ostringstream fname;
 		fname << "img" << i << ".ppm";
@@ -488,7 +551,7 @@ int main(){
 	
 		mainMatrix = IDENTITY;	
 
-		lookAt(0,0,20,0,0,0,0,1,0,10,100,20);	
+		lookAt(-15,-5,20,0,0,0,0,1,0,10,100,20);	
 		display(i);
 	
 		stream <<  "P1\n" << width << " " << height << "\n";
