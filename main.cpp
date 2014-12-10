@@ -434,9 +434,10 @@ void makeRing(float r1,float r2,float depth,float theta0,float dTheta,int numTim
 }
 
 void display(int frame){
+	lookAt(0,-5,20,0,0,0,0,1,0,10,100,20);	
 	//box1
 	pushMatrix();
-		translate(-7,0,-20);
+		translate(-20,0,-4);
 		rotate(frame*.1,false,true,false);
 		drawBox();
 		//triangle face front
@@ -486,7 +487,7 @@ void display(int frame){
 
 	//Box2
 	pushMatrix();
-		translate(0,0,-20);
+		translate(-13,0,-20);
 		rotate(1.56,false,true,false);
 		rotate((frame*1.3)*.1,false,true,false);
 		drawBox();
@@ -547,7 +548,7 @@ void display(int frame){
 	
 	//Box3
 	pushMatrix();
-		translate(0,0,-30);
+		translate(0,0,-34);
 		rotate(-.5,false,true,false);
 		rotate((frame*-1)*.1,false,true,false);
 		drawBox();
@@ -617,7 +618,7 @@ void display(int frame){
 
 	//Box4
 	pushMatrix();
-		translate(20,0,-20);
+		translate(13,0,-20);
 		rotate(-2,false,true,false);
 		rotate((frame*.7)*.1,false,true,false);
 		drawBox();
@@ -692,7 +693,7 @@ void display(int frame){
 	
 	//Box5
 	pushMatrix();
-		translate(0,0,0);
+		translate(20,0,-4);
 		rotate(-3,false,true,false);
 		rotate((frame*-1.3)*.1,false,true,false);
 		drawBox();
@@ -768,7 +769,7 @@ int main(){
 	//Greater z = Farther Back
 	
 	//for the image buffer, a greater number of the first is farther right. Greater of second is father down.
-	for(int i = 100;i < 251;i++){
+	for(int i = 100;i < 101;i++){
 		std::ofstream stream;
 		std::ostringstream fname;
 		fname << "img" << i << ".ppm";
@@ -782,7 +783,6 @@ int main(){
 	
 		mainMatrix = IDENTITY;	
 
-		lookAt(-15,-5,20,0,0,0,0,1,0,10,100,20);	
 		display(i);
 	
 		stream <<  "P1\n" << width << " " << height << "\n";
