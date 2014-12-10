@@ -13,6 +13,7 @@
 const int width = 600;
 const int height = 600;
 float TAU = 6.283185307;
+float RADIANCON = .01745329;
 int imageBuffer[width][height];
 float zBuffer[width][height];
 float IDENTITY[16] = {1,0,0,0,
@@ -254,9 +255,9 @@ void drawTriangle(triangle tri){
 	int y3 = (int)((tri.p3.y/tri.p3.w));
 	float z3 = tri.p3.w;
 
-	//CHECK FOR CLIPPING HERE?
-	//--do it before orthogonal project probably (8.1.3)
-	//CHECK FOR CLIPPING HERE?
+	if(z1 > -1 || z2 > -1 || z3 > -1){
+		return;
+	}
 
 	//Find the bounding box of the triangle 
 	int minx = std::min(std::min(x1,x2),x3);
@@ -448,6 +449,36 @@ void makeRingWithSkip(float r1,float r2,float depth,float theta0,float dTheta,in
 		}
                 deepSquare(point (r1*cos(theta),r1*sin(theta),0,1),point (r1*cos(theta2),r1*sin(theta2),0,1),
 			   point (r2*cos(theta2),r2*sin(theta2),0,1),point (r2*cos(theta),r2*sin(theta),0,1),1,true,drawLeft,drawWall,drawRight,true,true);
+        }
+}
+
+void moveNumber(int startNumber,int stopRotateNumber,bool fromLeft,int animFrame){
+        int rotateAmnt = 0;
+        int theta = 0;
+        if(animFrame >= startNumber){
+                if(animFrame < stopRotateNumber){
+                        rotateAmnt = (animFrame - startNumber);
+                }else{
+                        rotateAmnt = (stopRotateNumber - startNumber);
+                }
+        }
+        if(fromLeft==true){
+                theta = -(90-rotateAmnt)*RADIANCON;
+                if(animFrame>=stopRotateNumber){
+                	translate((sin(theta)*(animFrame-stopRotateNumber))/2,0,(cos(theta)*(animFrame-stopRotateNumber))/2);
+                }
+                translate(-20,-10,0);
+                rotate(theta,false,true,false);
+                translate(-20,0,0);
+        }else{
+                theta = -(90+rotateAmnt)*RADIANCON;
+                if(animFrame>=stopRotateNumber){
+                       translate(-(sin(theta)*(animFrame-stopRotateNumber))/2,0,-(cos(theta)*(animFrame-stopRotateNumber))/2);
+                }
+                translate(-20,-10,0);
+                rotate(theta,false,true,false);
+                translate(-20,0,0);
+                rotate(TAU/2,false,true,false);
         }
 }
 
@@ -782,7 +813,7 @@ void display(int frame){
 	//NUMBERS:
 	//1:
 	pushMatrix();
-		translate(-15,-10,0);
+		moveNumber(0,120,true,frame);
 		deepSquare(point (-.5,-2.5,0,1),point (.5,-2.5,0,1),point (.5,2.5,0,1),point (-.5,2.5,0,1),1,true,true,true,true,true,true);
 	popMatrix();
 	//2:
@@ -885,7 +916,7 @@ int main(){
 	//Greater z = Farther Back
 	
 	//for the image buffer, a greater number of the first is farther right. Greater of second is father down.
-	for(int i = 100;i < 101;i++){
+	for(int i = 100;i < 251;i++){
 		std::ofstream stream;
 		std::ostringstream fname;
 		fname << "img" << i << ".ppm";
