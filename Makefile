@@ -4,7 +4,7 @@ all: prog
 
 prog: main.o matrix.o point.o triangle.o
 	${CCC} main.o matrix.o point.o triangle.o -o prog4
-	echo "****Programming Assignment 4 for CS180 by John Thomason****"
+	echo "****Programming Assignment 4 for CS180 by John Thomason. Final Animation is anim.gif****"
 	./prog4
 	convert -delay 5 -loop 0 img*.ppm anim.gif
 	display img100.ppm

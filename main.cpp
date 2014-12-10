@@ -454,7 +454,8 @@ void makeRingWithSkip(float r1,float r2,float depth,float theta0,float dTheta,in
 
 void moveNumber(int startNumber,int stopRotateNumber,bool fromLeft,int animFrame){
         int rotateAmnt = 0;
-        int theta = 0;
+        float theta = 0;
+	float ychange = 0;
         if(animFrame >= startNumber){
                 if(animFrame < stopRotateNumber){
                         rotateAmnt = (animFrame - startNumber);
@@ -463,22 +464,27 @@ void moveNumber(int startNumber,int stopRotateNumber,bool fromLeft,int animFrame
                 }
         }
         if(fromLeft==true){
-                theta = -(90-rotateAmnt)*RADIANCON;
+                theta = TAU/4 - (rotateAmnt*RADIANCON);
                 if(animFrame>=stopRotateNumber){
                 	translate((sin(theta)*(animFrame-stopRotateNumber))/2,0,(cos(theta)*(animFrame-stopRotateNumber))/2);
                 }
-                translate(-20,-10,0);
+		if(animFrame<stopRotateNumber && animFrame >= startNumber){
+			//Used to achieve the go up and over the blocks thing
+			//ychange = sin(((((float)(animFrame-startNumber))/((float)(stopRotateNumber-startNumber)))*(TAU)));
+		}
+                translate(-25,0,0);
                 rotate(theta,false,true,false);
-                translate(-20,0,0);
+                translate(25,0,0);
         }else{
-                theta = -(90+rotateAmnt)*RADIANCON;
+                theta = -TAU/4 + (rotateAmnt*RADIANCON);
                 if(animFrame>=stopRotateNumber){
-                       translate(-(sin(theta)*(animFrame-stopRotateNumber))/2,0,-(cos(theta)*(animFrame-stopRotateNumber))/2);
+                       translate((sin(theta)*(animFrame-stopRotateNumber))/2,0,(cos(theta)*(animFrame-stopRotateNumber))/2);
                 }
-                translate(-20,-10,0);
+                translate(25,0,0);
                 rotate(theta,false,true,false);
-                translate(-20,0,0);
+                translate(-25,0,0);
                 rotate(TAU/2,false,true,false);
+		scale(-1,1,1);
         }
 }
 
@@ -813,12 +819,12 @@ void display(int frame){
 	//NUMBERS:
 	//1:
 	pushMatrix();
-		moveNumber(0,120,true,frame);
+		moveNumber(0,120,true,frame-100);
 		deepSquare(point (-.5,-2.5,0,1),point (.5,-2.5,0,1),point (.5,2.5,0,1),point (-.5,2.5,0,1),1,true,true,true,true,true,true);
 	popMatrix();
 	//2:
 	pushMatrix();
-		translate(-10,-10,0);
+		moveNumber(80,160,false,frame-100);
 		makeRing(1,2,1,TAU/2,.314,10,true,false);
 		deepSquare(point (1,0,0,1),point (2,0,0,1),point (-1,3,0,1),point (-2,3,0,1),1,false,true,false,true,true,true);
 		deepSquare(point (-2,3,0,1),point (-1,3,0,1),point (-1,4,0,1),point (-2,4,0,1),1,false,false,true,true,true,false);
@@ -826,7 +832,7 @@ void display(int frame){
 	popMatrix();
 	//3:
 	pushMatrix();
-		translate(-5,-10,0);
+		moveNumber(140,220,false,frame-100);
 		scale(2,1,1);
 		pushMatrix();
 			translate(0,-1.5,0);
@@ -839,7 +845,7 @@ void display(int frame){
 	popMatrix();
 	//4:
 	pushMatrix();
-		translate(0,-10,0);
+		moveNumber(200,320,false,frame-100);
 		deepSquare(point (-2.5,-2.5,0,1),point (-1.5,-2.5,0,1),point (-1.5,-.5,0,1),point (-2.5,-.5,0,1),1,true,true,false,true,false,true);
 		makeSquare(point (-2.5,-2.5,0),point (-2.5,-2.5,-1),point (-2.5,.5,-1),point (-2.5,.5,0));
 		deepSquare(point (-2.5,-.5,0,1),point (-1.5,-.5,0,1),point (-1.5,.5,0,1),point (-2.5,.5,0,1),1,false,false,true,true,false,false);
@@ -851,16 +857,16 @@ void display(int frame){
 	popMatrix();
 	//5:
 	pushMatrix();
-		translate(5,-10,0);
+		moveNumber(300,410,true,frame-100);
 		scale(1.5,1,1);
 		makeRingWithSkip(1,2,1,-TAU/4,.314,10,true,true,2);
-		deepSquare(point (0,-1.5,0,1),point (1.1,-1.5,0,1),point (1.1,-3,0,1),point (0,-3,0,1),1,false,true,false,true,true,false);
+		deepSquare(point (0,-1.5,0,1),point (1.1,-1.5,0,1),point (1.1,-3,0,1),point (0,-3,0,1),1,false,true,false,true,false,false);
 		deepSquare(point (0,-4,0,1),point (1.1,-4,0,1),point (1.1,-1.5,0,1),point (0,-1.5,0,1),1,true,false,false,true,true,false);
 		deepSquare(point (1.1,-4,0,1),point (2.3,-4,0,1),point (2.3,-3,0,1),point (1.1,-3,0,1),1,true,true,true,false,false,true);
 	popMatrix();
 	//6:
 	pushMatrix();
-		translate(10,-10,0);
+		moveNumber(360,480,false,frame-100);
 		makeRingWithSkip(1,2,1,-TAU/4-1*(.314),-.314,20,false,false,3);
 		deepSquare(point (-2,-3,0,1),point (-.5,-3,0,1),point (-.55,-1.85,0,1),point (-2,-.2,0,1),1,false,true,false,true,true,true);
 		pushMatrix();
@@ -870,15 +876,16 @@ void display(int frame){
 	popMatrix();
 	//7:
 	pushMatrix();
-		translate(-20,10,0);
+		moveNumber(460,560,true,frame-100);
 		deepSquare(point (-2.5,-2.5,0,1),point (1,-2.5,0,1),point (1,-1.5,0,1),point (-2.5,-1.5,0,1),1,true,false,true,true,true,false);
+		makeSquare(point (-2.5,-2.5,0),point (-2.5,-2.5,-1),point (2.5,-2.5,-1),point (2.5,-2.5,0));
 		deepSquare(point (1,-2.5,0,1),point (2.5,-2.5,0,1),point (2,-1.5,0,1),point (1,-1.5,0,1),1,true,true,false,false,false,false);
 		deepSquare(point (1,-1.5,0,1),point (2,-1.5,0,1),point (.5,2.5,0,1),point (-.5,2.5,0,1),1,false,true,true,true,true,false);
 		makeSquare(point (.5,2.5,0),point (-.5,2.5,0),point (-.5,2.5,-1),point (.5,2.5,-1));
 	popMatrix();
 	//8:
 	pushMatrix();
-		translate(-10,10,0);
+		moveNumber(540,640,false,frame-100);
 		pushMatrix();
 			translate(0,-1.5,0);
 			makeRingWithSkip(1,2,1,TAU/4-2*(-.314),-.314,20,false,false,4);
@@ -890,7 +897,7 @@ void display(int frame){
 	popMatrix();
 	//9:
 	pushMatrix();
-		translate(10,10,0);
+		moveNumber(620,715,true,frame-100);
 		scale(-1,1,1);
 		rotate(TAU/2,true,false,false);
 		makeRingWithSkip(1,2,1,-TAU/4-1*(.314),-.314,20,false,false,3);
@@ -902,6 +909,7 @@ void display(int frame){
 	popMatrix();
 	//10:
 	pushMatrix();
+		moveNumber(685,775,false,frame-100);
 		deepSquare(point (-.5,-2.5,0,1),point (.5,-2.5,0,1),point (.5,2.5,0,1),point (-.5,2.5,0,1),1,true,true,true,true,true,true);
 		scale(1,1.25,1);
 		translate(3,0,0);
@@ -916,7 +924,7 @@ int main(){
 	//Greater z = Farther Back
 	
 	//for the image buffer, a greater number of the first is farther right. Greater of second is father down.
-	for(int i = 100;i < 251;i++){
+	for(int i = 100;i < 914;i++){
 		std::ofstream stream;
 		std::ostringstream fname;
 		fname << "img" << i << ".ppm";
