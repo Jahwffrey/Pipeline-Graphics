@@ -412,6 +412,27 @@ void makeShape(float radius,float numSides,float depth){
 
 }
 
+void makeRing(float r1,float r2,float depth,float theta0,float dTheta,int numTimes,bool closed){
+        float theta;
+        float theta2;
+        for(int i = 0; i < numTimes;i++){
+                theta = theta0+(i*dTheta);
+                theta2 = theta+dTheta;
+		bool drawLeft = false;
+		bool drawRight = false;
+		if(!closed){
+			if(i == 0){
+				drawRight = true;
+			}
+			if(i == numTimes-1){
+				drawLeft = true;
+			}
+		}
+                deepSquare(point (r1*cos(theta),r1*sin(theta),0,1),point (r1*cos(theta2),r1*sin(theta2),0,1),
+			   point (r2*cos(theta2),r2*sin(theta2),0,1),point (r2*cos(theta),r2*sin(theta),0,1),1,true,drawLeft,true,drawRight,true,true);
+        }
+}
+
 void display(int frame){
 	//box1
 	pushMatrix();
@@ -596,7 +617,7 @@ void display(int frame){
 
 	//Box4
 	pushMatrix();
-		translate(0,0,0);
+		translate(20,0,-20);
 		rotate(-2,false,true,false);
 		rotate((frame*.7)*.1,false,true,false);
 		drawBox();
@@ -668,8 +689,76 @@ void display(int frame){
 			makeShape(2.5,25,1);
 		popMatrix();
 	popMatrix();
-
-
+	
+	//Box5
+	pushMatrix();
+		translate(0,0,0);
+		rotate(-3,false,true,false);
+		rotate((frame*-1.3)*.1,false,true,false);
+		drawBox();
+		//Septagon face front
+		pushMatrix();
+			translate(0,0,6);
+			makeShape(2.5,7,1);
+		popMatrix();
+		//I face right
+		pushMatrix();
+			translate(6,0,0);
+			rotate(TAU/4,false,true,false);
+			rotate(TAU/4,false,false,true);
+			deepSquare(point (-2.5,-2.5,0,1),point (-2,-2.5,0,1),point (-2,-.25,0,1),point (-2.5,-.25,0,1),1,true,true,false,true,false,true);			
+			deepSquare(point (-2.5,2.5,0,1),point (-2,2.5,0,1),point (-2,.25,0,1),point (-2.5,.25,0,1),1,true,true,false,true,false,true);			
+			deepSquare(point (-2.5,-.25,0,1),point (-2,-.25,0,1),point (-2,.25,0,1),point (-2.5,.25,0,1),1,false,false,false,true,false,false);
+			makeSquare(point (-2.5,-2.5,0),point (-2.5,-2.5,-1),point (-2.5,2.5,-1),point (-2.5,2.5,0),true,true,true,true);
+			deepSquare(point (2.5,-2.5,0,1),point (2,-2.5,0,1),point (2,-.25,0,1),point (2.5,-.25,0,1),1,true,true,false,true,false,true);			
+			deepSquare(point (2.5,2.5,0,1),point (2,2.5,0,1),point (2,.25,0,1),point (2.5,.25,0,1),1,true,true,false,true,false,true);			
+			deepSquare(point (2.5,-.25,0,1),point (2,-.25,0,1),point (2,.25,0,1),point (2.5,.25,0,1),1,false,false,false,true,false,false);
+			makeSquare(point (2.5,-2.5,0),point (2.5,-2.5,-1),point (2.5,2.5,-1),point (2.5,2.5,0),true,true,true,true);
+			deepSquare(point (-2,-.25,0,1),point (2,-.25,0,1),point (2,.25,0,1),point (-2,.25,0,1),1,true,false,true,false,false,false);
+		popMatrix();
+		//= face left
+		pushMatrix();
+			translate(-6,0,0);
+			rotate(-TAU/4,false,true,false);
+			deepSquare(point (-2.5,-2.5,0,1),point (2.5,-2.5,0,1),point (2.5,-1.5,0,1),point(-2.5,-1.5,0,1),1,true,true,true,true,true,true);
+			deepSquare(point (-2.5,2.5,0,1),point (2.5,2.5,0,1),point (2.5,1.5,0,1),point(-2.5,1.5,0,1),1,true,true,true,true,true,true);
+		popMatrix();
+		//O face back
+		pushMatrix();
+			translate(0,0,-6);
+			rotate(TAU/2,false,true,false);
+			makeRing(1.5,2.5,1,0,.314,20,true);
+		popMatrix();
+		//dice 5 face top
+		pushMatrix();
+			translate(0,-6,0);
+			rotate(TAU/4,true,false,false);
+			pushMatrix();
+				translate(1.9,-1.9,0);
+				makeShape(1.25,20,1);
+			popMatrix();
+			pushMatrix();
+				translate(-1.9,1.9,0);
+				makeShape(1.25,20,1);
+			popMatrix();
+			pushMatrix();
+				translate(-1.9,-1.9,0);
+				makeShape(1.25,20,1);
+			popMatrix();
+			pushMatrix();
+				translate(1.9,1.9,0);
+				makeShape(1.25,20,1);
+			popMatrix();
+			makeShape(1.25,20,1);
+		popMatrix();
+		//circle face bottom
+		pushMatrix();
+			translate(0,6,0);
+			rotate(-TAU/4,true,false,false);
+			makeRing(1.5,2.5,1,0,.314,5,false);
+			makeRing(1.5,2.5,1,TAU/2,.314,5,false);
+		popMatrix();
+	popMatrix();
 }
 
 int main(){
@@ -679,7 +768,7 @@ int main(){
 	//Greater z = Farther Back
 	
 	//for the image buffer, a greater number of the first is farther right. Greater of second is father down.
-	for(int i = 100;i < 201;i++){
+	for(int i = 100;i < 251;i++){
 		std::ofstream stream;
 		std::ostringstream fname;
 		fname << "img" << i << ".ppm";
