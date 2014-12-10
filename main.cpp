@@ -489,7 +489,7 @@ void moveNumber(int startNumber,int stopRotateNumber,bool fromLeft,int animFrame
 }
 
 void display(int frame){
-	lookAt(0,-5,20,0,0,0,0,1,0,10,100,20);	
+	lookAt(0,5*sin(TAU*frame*.01),20,0,0,0,0,1,0,10,100,20);	
 	//box1
 	pushMatrix();
 		translate(-20,0,-4);
@@ -924,7 +924,7 @@ int main(){
 	//Greater z = Farther Back
 	
 	//for the image buffer, a greater number of the first is farther right. Greater of second is father down.
-	for(int i = 100;i < 914;i++){
+	for(int i = 100;i < 913;i++){
 		std::ofstream stream;
 		std::ostringstream fname;
 		fname << "img" << i << ".ppm";
