@@ -4,18 +4,18 @@
 
 class point{
 public:
-	float x;
-	float y;
-	float z;
-	float w;
+	double x;
+	double y;
+	double z;
+	double w;
 	
 	point();
-	point(float xx,float yy,float zz);
-	point(float xx,float yy,float zz,float ww);
+	point(double xx,double yy,double zz);
+	point(double xx,double yy,double zz,double ww);
 	
-	float magnitude();
+	double magnitude();
 	
-	point s_times(float scalar);	
+	point s_times(double scalar);	
 	point times(matrix matt);
 	point cross(point other);
 
@@ -27,10 +27,10 @@ public:
 	}
 	
 	point operator-(const point& r){
-		float nx = x-r.x;
-		float ny = y-r.y;
-		float nz = z-r.z;
-		//float nw = w-r.w;
+		double nx = x-r.x;
+		double ny = y-r.y;
+		double nz = z-r.z;
+		//double nw = w-r.w;
 
 		return point(nx,ny,nz,1);
 	}

@@ -8,7 +8,7 @@ class triangle{
 	point p3;
 	
 	triangle(point p11,point p22,point p33);
-	triangle(float* p11,float* p22,float* p33);
+	triangle(double* p11,double* p22,double* p33);
 	triangle(point p11,point p22,point p33,bool dLine12,bool dLine23,bool dLine31);
 
 	void drawT();
@@ -26,7 +26,7 @@ triangle::triangle(point p11,point p22,point p33){
 	drawLine31 = true;
 }
 
-triangle::triangle(float* p11,float* p22,float* p33){
+triangle::triangle(double* p11,double* p22,double* p33){
 	p1 = point (p11[0],p11[1],p11[2]);
 	p2 = point (p22[0],p22[1],p22[2]);
 	p3 = point (p33[0],p33[1],p33[2]);

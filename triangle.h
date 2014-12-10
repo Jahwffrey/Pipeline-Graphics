@@ -14,7 +14,7 @@ public:
 	
 	triangle(point p11,point p22,point p33);
 	triangle(point p11,point p22,point p33,bool dLine12,bool dLine23,bool dLine31);
-	triangle(float* p11,float* p22,float* p33);
+	triangle(double* p11,double* p22,double* p33);
 
 	void drawT();
 	void drawT(bool drawLine12,bool drawLine23,bool drawLine31);

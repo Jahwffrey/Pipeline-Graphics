@@ -8,7 +8,7 @@
 
 /*
  class matrix{
-	float values[16];
+	double values[16];
 	}
 */
 
@@ -18,7 +18,7 @@ matrix::matrix(){
 	}
 }
 
-matrix::matrix(float* set_values){
+matrix::matrix(double* set_values){
 	for(int i = 0; i < 16; i++){
 		values[i] = set_values[i];
 	}
@@ -31,11 +31,11 @@ matrix::matrix(const matrix& copy){
 }
 
 void matrix::times(matrix matt){
-	float temps[16];
+	double temps[16];
 	for(int i = 0;i < 16; i++){
 		temps[i] = values[i];
 	}
-	float* mat = matt.values;
+	double* mat = matt.values;
 	
 	values[0] = mat[0]*temps[0] + mat[4]*temps[1] + mat[8]*temps[2] + mat[12]*temps[3];	
 	values[1] = mat[1]*temps[0] + mat[5]*temps[1] + mat[9]*temps[2] + mat[13]*temps[3];
