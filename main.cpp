@@ -412,7 +412,7 @@ void makeShape(float radius,float numSides,float depth){
 
 }
 
-void makeRing(float r1,float r2,float depth,float theta0,float dTheta,int numTimes,bool closed){
+void makeRing(float r1,float r2,float depth,float theta0,float dTheta,int numTimes,bool closeFirstEnd,bool closeLastEnd){
         float theta;
         float theta2;
         for(int i = 0; i < numTimes;i++){
@@ -420,16 +420,34 @@ void makeRing(float r1,float r2,float depth,float theta0,float dTheta,int numTim
                 theta2 = theta+dTheta;
 		bool drawLeft = false;
 		bool drawRight = false;
-		if(!closed){
-			if(i == 0){
-				drawRight = true;
-			}
-			if(i == numTimes-1){
-				drawLeft = true;
-			}
+		if(i == 0){
+			drawRight = closeFirstEnd;
+		}
+		if(i == numTimes-1){
+			drawLeft = closeLastEnd;
 		}
                 deepSquare(point (r1*cos(theta),r1*sin(theta),0,1),point (r1*cos(theta2),r1*sin(theta2),0,1),
 			   point (r2*cos(theta2),r2*sin(theta2),0,1),point (r2*cos(theta),r2*sin(theta),0,1),1,true,drawLeft,true,drawRight,true,true);
+        }
+}
+
+void makeRingWithSkip(float r1,float r2,float depth,float theta0,float dTheta,int numTimes,bool closeFirstEnd,bool closeLastEnd,int skipTimes){
+        float theta;
+        float theta2;
+        for(int i = 0; i < numTimes;i++){
+                theta = theta0+(i*dTheta);
+                theta2 = theta+dTheta;
+		bool drawLeft = false;
+		bool drawRight = false;
+		bool drawWall = ((i>=skipTimes)? true : false);
+		if(i == 0){
+			drawRight = closeFirstEnd;
+		}
+		if(i == numTimes-1){
+			drawLeft = closeLastEnd;
+		}
+                deepSquare(point (r1*cos(theta),r1*sin(theta),0,1),point (r1*cos(theta2),r1*sin(theta2),0,1),
+			   point (r2*cos(theta2),r2*sin(theta2),0,1),point (r2*cos(theta),r2*sin(theta),0,1),1,true,drawLeft,drawWall,drawRight,true,true);
         }
 }
 
@@ -728,7 +746,7 @@ void display(int frame){
 		pushMatrix();
 			translate(0,0,-6);
 			rotate(TAU/2,false,true,false);
-			makeRing(1.5,2.5,1,0,.314,20,true);
+			makeRing(1.5,2.5,1,0,.314,20,false,false);
 		popMatrix();
 		//dice 5 face top
 		pushMatrix();
@@ -752,12 +770,39 @@ void display(int frame){
 			popMatrix();
 			makeShape(1.25,20,1);
 		popMatrix();
-		//circle face bottom
+		//thing face bottom
 		pushMatrix();
 			translate(0,6,0);
 			rotate(-TAU/4,true,false,false);
-			makeRing(1.5,2.5,1,0,.314,5,false);
-			makeRing(1.5,2.5,1,TAU/2,.314,5,false);
+			makeRing(1.5,2.5,1,0,.314,5,true,true);
+			makeRing(1.5,2.5,1,TAU/2,.314,5,true,true);
+		popMatrix();
+	popMatrix();
+
+	//NUMBERS:
+	//1:
+	pushMatrix();
+		translate(-15,-10,0);
+		deepSquare(point (-.5,-2.5,0,1),point (.5,-2.5,0,1),point (.5,2.5,0,1),point (-.5,2.5,0,1),1,true,true,true,true,true,true);
+	popMatrix();
+	//2:
+	pushMatrix();
+		translate(-10,-10,0);
+		makeRing(1,2,1,TAU/2,.314,10,true,false);
+		deepSquare(point (1,0,0,1),point (2,0,0,1),point (-1,3,0,1),point (-2,3,0,1),1,false,true,false,true,true,true);
+		deepSquare(point (-2,3,0,1),point (-1,3,0,1),point (-1,4,0,1),point (-2,4,0,1),1,false,false,true,true,true,false);
+		deepSquare(point (-1,3,0,1),point (2,3,0,1),point (2,4,0,1),point (-1,4,0,1),1,true,true,true,false,false,true);
+	popMatrix();
+	//3:
+	pushMatrix();
+		translate(-5,-10,0);
+		pushMatrix();
+			translate(0,-1.5,0);
+			makeRingWithSkip(1,2,1,TAU/4,-.314,10,true,true,2);
+		popMatrix();
+		pushMatrix();
+			translate(0,1.5,0);
+			makeRingWithSkip(1,2,1,-TAU/4,.314,10,true,true,2);
 		popMatrix();
 	popMatrix();
 }
