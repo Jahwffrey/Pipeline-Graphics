@@ -805,6 +805,36 @@ void display(int frame){
 			makeRingWithSkip(1,2,1,-TAU/4,.314,10,true,true,2);
 		popMatrix();
 	popMatrix();
+	//4:
+	pushMatrix();
+		translate(0,-10,0);
+		deepSquare(point (-2.5,-2.5,0,1),point (-1.5,-2.5,0,1),point (-1.5,-.5,0,1),point (-2.5,-.5,0,1),1,true,true,false,true,false,true);
+		makeSquare(point (-2.5,-2.5,0),point (-2.5,-2.5,-1),point (-2.5,.5,-1),point (-2.5,.5,0));
+		deepSquare(point (-2.5,-.5,0,1),point (-1.5,-.5,0,1),point (-1.5,.5,0,1),point (-2.5,.5,0,1),1,false,false,true,true,false,false);
+		deepSquare(point (-1.5,-.5,0,1),point (1.5,-.5,0,1),point (1.5,.5,0,1),point (-1.5,.5,0,1),1,true,false,true,false,false,false);
+		deepSquare(point (2.5,-2.5,0,1),point (1.5,-2.5,0,1),point (1.5,-.5,0,1),point (2.5,-.5,0,1),1,true,true,false,true,false,true);
+		makeSquare(point (2.5,-2.5,0),point (2.5,-2.5,-1),point (2.5,.5,-1),point (2.5,.5,0));
+		deepSquare(point (2.5,-.5,0,1),point (1.5,-.5,0,1),point (1.5,.5,0,1),point (2.5,.5,0,1),1,false,false,false,true,false,false);
+		deepSquare(point (1.5,.5,0,1),point (2.5,.5,0,1),point (2.5,2.5,0,1),point (1.5,2.5,0,1),1,false,true,true,true,true,false);
+	popMatrix();
+	//5:
+	pushMatrix();
+		translate(5,-10,0);
+		makeRingWithSkip(1,2,1,-TAU/4,.314,10,true,true,2);
+		deepSquare(point (0,-1.5,0,1),point (1.1,-1.5,0,1),point (1.1,-3,0,1),point (0,-3,0,1),1,false,true,false,true,true,false);
+		deepSquare(point (0,-4,0,1),point (1.1,-4,0,1),point (1.1,-1.5,0,1),point (0,-1.5,0,1),1,true,false,false,true,true,false);
+		deepSquare(point (1.1,-4,0,1),point (2.3,-4,0,1),point (2.3,-3,0,1),point (1.1,-3,0,1),1,true,true,true,false,false,true);
+	popMatrix();
+	//6:
+	pushMatrix();
+		translate(10,-10,0);
+		makeRingWithSkip(1,2,1,-TAU/4-1*(.314),-.314,20,false,false,3);
+		deepSquare(point (-2,-3,0,1),point (-.5,-3,0,1),point (-.55,-1.85,0,1),point (-2,-.2,0,1),1,false,true,false,true,true,true);
+		pushMatrix();
+			translate(0,-3,0);
+			makeRing(.5,2,1,0,-.314,10,true,false);
+		popMatrix();
+	popMatrix();
 }
 
 int main(){
