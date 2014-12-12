@@ -185,7 +185,7 @@ void drawLine(point p1, point p2){
 	//Account for positive slopes
 	int ymod = ((y2 < y1) ? (-1) : (1));
 
-	double tolerance = .1;
+	double tolerance = .3;
 	
 	//I may need to center this around the origin by adding width/2 or height/2 to indicies of imageBuffer
 	for(int x = x1+1; x <= x2; x++){
@@ -255,7 +255,7 @@ void drawTriangle(triangle tri){
 	int y3 = (int)((tri.p3.y/tri.p3.w));
 	double z3 = tri.p3.w;
 
-	if(z1 > -1 || z2 > -1 || z3 > -1){
+	if(z1 > -2 || z2 > -2 || z3 > -2){
 		return;
 	}
 
@@ -270,7 +270,7 @@ void drawTriangle(triangle tri){
 	for(int y = miny;y <= maxy;y++){
 		for(int x = minx;x <= maxx;x++){
 
-			double tolerance = .1;
+			double tolerance = .2;
 
 			double alpha = geometricLineCheck(x2,y2,x3,y3,(double)x+.5,(double)y+.5)/geometricLineCheck(x2,y2,x3,y3,(double)x1,(double)y1);
 			double beta = geometricLineCheck(x3,y3,x1,y1,(double)x+.5,(double)y+.5)/geometricLineCheck(x3,y3,x1,y1,(double)x2,(double)y2);
@@ -285,7 +285,8 @@ void drawTriangle(triangle tri){
 							imageBuffer[x][y] = 0;
 						}
 						zBuffer[x][y] = depth;
-						/*if(alpha < .1 && tri.drawLine23){
+						/*
+						if(alpha < .1 && tri.drawLine23){
 							imageBuffer[x][y] = 1;
 						}
 						if(beta < .1 && tri.drawLine31){
@@ -293,7 +294,8 @@ void drawTriangle(triangle tri){
 						}
 						if(gamma < .1 && tri.drawLine12){
 							imageBuffer[x][y] = 1;
-						}*/
+						}
+						*/
 					}
 				}
 			}
@@ -489,7 +491,8 @@ void moveNumber(int startNumber,int stopRotateNumber,bool fromLeft,int animFrame
 }
 
 void display(int frame){
-	lookAt(0,-5,20,0,0,0,0,1,0,10,100,20);	
+	lookAt(-45*sin(frame*RADIANCON),-30,-45*cos(frame*RADIANCON),0,0,0,0,1,0,10,-100,10);	
+	//lookAt(0,-5,35,0,0,0,0,1,0,10,-100,10);	
 	//box1
 	pushMatrix();
 		translate(-20,0,-4);
@@ -819,19 +822,24 @@ void display(int frame){
 	//NUMBERS:
 	//1:
 	pushMatrix();
+		if(frame < 399){
 		moveNumber(0,120,true,frame-100);
 		deepSquare(point (-.5,-2.5,0,1),point (.5,-2.5,0,1),point (.5,2.5,0,1),point (-.5,2.5,0,1),1,true,true,true,true,true,true);
+		}
 	popMatrix();
 	//2:
 	pushMatrix();
+		if(frame >= 80 && frame < 399){
 		moveNumber(80,160,false,frame-100);
 		makeRing(1,2,1,TAU/2,.314,10,true,false);
 		deepSquare(point (1,0,0,1),point (2,0,0,1),point (-1,3,0,1),point (-2,3,0,1),1,false,true,false,true,true,true);
 		deepSquare(point (-2,3,0,1),point (-1,3,0,1),point (-1,4,0,1),point (-2,4,0,1),1,false,false,true,true,true,false);
 		deepSquare(point (-1,3,0,1),point (2,3,0,1),point (2,4,0,1),point (-1,4,0,1),1,true,true,true,false,false,true);
+		}
 	popMatrix();
 	//3:
 	pushMatrix();
+		if(frame >= 140 && frame < 416){
 		moveNumber(140,220,false,frame-100);
 		scale(2,1,1);
 		pushMatrix();
@@ -842,9 +850,11 @@ void display(int frame){
 			translate(0,1.5,0);
 			makeRingWithSkip(1,2,1,-TAU/4,.314,10,true,true,2);
 		popMatrix();
+		}
 	popMatrix();
 	//4:
 	pushMatrix();
+		if(frame >= 200 && frame < 462){
 		moveNumber(200,320,false,frame-100);
 		deepSquare(point (-2.5,-2.5,0,1),point (-1.5,-2.5,0,1),point (-1.5,-.5,0,1),point (-2.5,-.5,0,1),1,true,true,false,true,false,true);
 		makeSquare(point (-2.5,-2.5,0),point (-2.5,-2.5,-1),point (-2.5,.5,-1),point (-2.5,.5,0));
@@ -854,18 +864,22 @@ void display(int frame){
 		makeSquare(point (2.5,-2.5,0),point (2.5,-2.5,-1),point (2.5,.5,-1),point (2.5,.5,0));
 		deepSquare(point (2.5,-.5,0,1),point (1.5,-.5,0,1),point (1.5,.5,0,1),point (2.5,.5,0,1),1,false,false,false,true,false,false);
 		deepSquare(point (1.5,.5,0,1),point (2.5,.5,0,1),point (2.5,2.5,0,1),point (1.5,2.5,0,1),1,false,true,true,true,true,false);
+		}
 	popMatrix();
 	//5:
 	pushMatrix();
+		if(frame >= 300 && frame < 558){
 		moveNumber(300,410,true,frame-100);
 		scale(1.5,1,1);
 		makeRingWithSkip(1,2,1,-TAU/4,.314,10,true,true,2);
 		deepSquare(point (0,-1.5,0,1),point (1.1,-1.5,0,1),point (1.1,-3,0,1),point (0,-3,0,1),1,false,true,false,true,false,false);
 		deepSquare(point (0,-4,0,1),point (1.1,-4,0,1),point (1.1,-1.5,0,1),point (0,-1.5,0,1),1,true,false,false,true,true,false);
 		deepSquare(point (1.1,-4,0,1),point (2.3,-4,0,1),point (2.3,-3,0,1),point (1.1,-3,0,1),1,true,true,true,false,false,true);
+		}
 	popMatrix();
 	//6:
 	pushMatrix();
+		if(frame >= 360 && frame < 611){
 		moveNumber(360,480,false,frame-100);
 		makeRingWithSkip(1,2,1,-TAU/4-1*(.314),-.314,20,false,false,3);
 		deepSquare(point (-2,-3,0,1),point (-.5,-3,0,1),point (-.55,-1.85,0,1),point (-2,-.2,0,1),1,false,true,false,true,true,true);
@@ -873,18 +887,22 @@ void display(int frame){
 			translate(0,-3,0);
 			makeRing(.5,2,1,0,-.314,10,true,false);
 		popMatrix();
+		}
 	popMatrix();
 	//7:
 	pushMatrix();
+		if(frame >= 460 && frame < 763){
 		moveNumber(460,560,true,frame-100);
 		deepSquare(point (-2.5,-2.5,0,1),point (1,-2.5,0,1),point (1,-1.5,0,1),point (-2.5,-1.5,0,1),1,true,false,true,true,true,false);
 		makeSquare(point (-2.5,-2.5,0),point (-2.5,-2.5,-1),point (2.5,-2.5,-1),point (2.5,-2.5,0));
 		deepSquare(point (1,-2.5,0,1),point (2.5,-2.5,0,1),point (2,-1.5,0,1),point (1,-1.5,0,1),1,true,true,false,false,false,false);
 		deepSquare(point (1,-1.5,0,1),point (2,-1.5,0,1),point (.5,2.5,0,1),point (-.5,2.5,0,1),1,false,true,true,true,true,false);
 		makeSquare(point (.5,2.5,0),point (-.5,2.5,0),point (-.5,2.5,-1),point (.5,2.5,-1));
+		}
 	popMatrix();
 	//8:
 	pushMatrix();
+		if(frame >= 540 && frame < 802){
 		moveNumber(540,640,false,frame-100);
 		pushMatrix();
 			translate(0,-1.5,0);
@@ -894,9 +912,11 @@ void display(int frame){
 			translate(0,1.5,0);
 			makeRingWithSkip(1,2,1,-TAU/4+2*(-.314),.314,20,false,false,4);
 		popMatrix();
+		}
 	popMatrix();
 	//9:
 	pushMatrix();
+		if(frame >= 620){
 		moveNumber(620,715,true,frame-100);
 		scale(-1,1,1);
 		rotate(TAU/2,true,false,false);
@@ -906,14 +926,17 @@ void display(int frame){
 			translate(0,-3,0);
 			makeRing(.5,2,1,0,-.314,10,true,false);
 		popMatrix();
+		}
 	popMatrix();
 	//10:
 	pushMatrix();
+		if(frame >= 685){
 		moveNumber(685,775,false,frame-100);
 		deepSquare(point (-.5,-2.5,0,1),point (.5,-2.5,0,1),point (.5,2.5,0,1),point (-.5,2.5,0,1),1,true,true,true,true,true,true);
 		scale(1,1.25,1);
 		translate(3,0,0);
 		makeRing(1,2,1,TAU/4,.314,20,false,false);
+		}
 	popMatrix();
 }
 
@@ -924,7 +947,7 @@ int main(){
 	//Greater z = Farther Back
 	
 	//for the image buffer, a greater number of the first is farther right. Greater of second is father down.
-	for(int i = 100;i < 913;i++){
+	for(int i = 100;i < 913;i++){ //100 - 913, 840 for testing
 		std::ofstream stream;
 		std::ostringstream fname;
 		fname << "img" << i << ".ppm";
